@@ -1,15 +1,24 @@
-// App.jsx - This is the main file of our app
-// Think of it like the "home base" that controls all pages
+// App.jsx
+// This file controls all our pages
+// Think of it like a traffic controller
 
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import UploadPage from './pages/UploadPage'
+import AnalysisPage from './pages/AnalysisPage'
+import DashboardPage from './pages/DashboardPage'
+import './App.css'
 
 function App() {
   return (
-    <div>
-      <UploadPage />
-    </div>
+    // BrowserRouter enables navigation in our app
+    <BrowserRouter>
+      <Routes>
+        {/* Each Route is like a door to a page */}
+        <Route path="/"          element={<UploadPage />} />
+        <Route path="/analysis"  element={<AnalysisPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

@@ -1,89 +1,70 @@
-// UploadPage.jsx
-// Now connected to our FastAPI backend!
-
 import { useState } from 'react'
-
+import { useNavigate } from 'react-router-dom'
+import { saveCall } from '../utils/storage'
 function UploadPage() {
 
-  // Memory boxes (states)
+  const navigate = useNavigate()
   const [selectedFile, setSelectedFile] = useState(null)
   const [isDragging, setIsDragging]     = useState(false)
-  const [isUploading, setIsUploading]   = useState(false) // loading state
-  const [result, setResult]             = useState(null)  // stores response
-  const [error, setError]               = useState(null)  // stores errors
+  const [isUploading, setIsUploading]   = useState(false)
+  const [error, setError]               = useState(null)
 
-  // When user picks file normally
   function handleFileChange(event) {
     const file = event.target.files[0]
     setSelectedFile(file)
-    setResult(null)  // clear old results
-    setError(null)   // clear old errors
+    setError(null)
   }
 
-  // When user drags file OVER the box
   function handleDragOver(event) {
     event.preventDefault()
     setIsDragging(true)
   }
 
-  // When user drags file AWAY
   function handleDragLeave() {
     setIsDragging(false)
   }
 
-  // When user DROPS file
   function handleDrop(event) {
     event.preventDefault()
     setIsDragging(false)
     const file = event.dataTransfer.files[0]
     setSelectedFile(file)
-    setResult(null)
     setError(null)
   }
 
-  // When user clicks Upload & Analyze button
-  // This is the MAIN function that talks to backend
   async function handleUpload() {
-
-    // Check if file is selected
     if (!selectedFile) {
       alert('Please select a file first!')
       return
     }
 
     try {
-      // Show loading state
       setIsUploading(true)
       setError(null)
 
-      // FormData is like a container to send files
       const formData = new FormData()
       formData.append('file', selectedFile)
 
-      // Send file to our FastAPI backend
-      // fetch() is like a messenger that sends data
       const response = await fetch('http://localhost:8000/api/v1/upload', {
-        method: 'POST',   // POST means we are sending data
-        body: formData    // The file we are sending
+        method: 'POST',
+        body: formData
       })
 
-      // Convert response to JSON
       const data = await response.json()
 
-      // Check if something went wrong
       if (!response.ok) {
         setError(data.detail || 'Upload failed!')
         return
       }
+// Save call to localStorage
+const savedCall = saveCall(data)
 
-      // Save result in our memory box
-      setResult(data)
+// Navigate to analysis page with result data
+navigate('/analysis', { state: { result: data, callId: savedCall.id } })
 
     } catch (err) {
-      // If backend is not running or network error
       setError('Cannot connect to backend. Is it running?')
     } finally {
-      // Always stop loading whether success or fail
       setIsUploading(false)
     }
   }
@@ -126,7 +107,7 @@ function UploadPage() {
           Upload Sales Call
         </h2>
 
-        {/* Drag and Drop Box */}
+        {/* Drag Drop Box */}
         <div
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -151,7 +132,6 @@ function UploadPage() {
             or click below to browse
           </p>
 
-          {/* Hidden file input */}
           <input
             type="file"
             accept=".mp3,.wav,.m4a,.flac"
@@ -160,7 +140,6 @@ function UploadPage() {
             style={{ display: 'none' }}
           />
 
-          {/* Browse button */}
           <label htmlFor="fileInput" style={{
             backgroundColor: '#4361ee',
             color: 'white',
@@ -178,7 +157,7 @@ function UploadPage() {
           </p>
         </div>
 
-        {/* Selected file info */}
+        {/* Selected File Info */}
         {selectedFile && (
           <div style={{
             marginTop: '20px',
@@ -219,8 +198,7 @@ function UploadPage() {
             cursor: isUploading ? 'not-allowed' : 'pointer'
           }}
         >
-          {/* Button text changes based on state */}
-          {isUploading ? '⏳ Uploading...' : '🚀 Upload & Analyze'}
+          {isUploading ? '⏳ Analyzing... Please wait' : '🚀 Upload & Analyze'}
         </button>
 
         {/* Error Message */}
@@ -238,87 +216,9 @@ function UploadPage() {
           </div>
         )}
 
-        {/* Success Result */}
-{result && (
-  <div style={{ marginTop: '16px' }}>
-
-    {/* Success Header */}
-    <div style={{
-      backgroundColor: '#f0fff4',
-      border: '1px solid #86efac',
-      borderRadius: '10px',
-      padding: '14px',
-      marginBottom: '16px'
-    }}>
-      <p style={{ color: '#166534', fontWeight: '600', marginBottom: '8px' }}>
-        ✅ Analysis Complete!
-      </p>
-      <p style={{ color: '#166534', fontSize: '14px' }}>
-        📁 File: {result.filename}
-      </p>
-      <p style={{ color: '#166534', fontSize: '14px' }}>
-        📦 Size: {result.size_mb} MB
-      </p>
-      <p style={{ color: '#166534', fontSize: '14px' }}>
-        🌐 Language: {result.language}
-      </p>
-    </div>
-
-    {/* Transcript Box */}
-    <div style={{
-      backgroundColor: '#f8faff',
-      border: '1px solid #c7d7fd',
-      borderRadius: '10px',
-      padding: '16px',
-      marginBottom: '16px'
-    }}>
-      <p style={{
-        fontWeight: '700',
-        color: '#1e3a8a',
-        marginBottom: '10px',
-        fontSize: '15px'
-      }}>
-        📝 Transcript
-      </p>
-      <p style={{
-        color: '#334155',
-        fontSize: '14px',
-        lineHeight: '1.6'
-      }}>
-        {result.transcript}
-      </p>
-    </div>
-
-    {/* AI Analysis Box */}
-    <div style={{
-      backgroundColor: '#fdf4ff',
-      border: '1px solid #e9d5ff',
-      borderRadius: '10px',
-      padding: '16px'
-    }}>
-      <p style={{
-        fontWeight: '700',
-        color: '#6b21a8',
-        marginBottom: '10px',
-        fontSize: '15px'
-      }}>
-        🤖 AI Coaching Analysis
-      </p>
-      <p style={{
-        color: '#334155',
-        fontSize: '14px',
-        lineHeight: '1.8',
-        whiteSpace: 'pre-line'
-      }}>
-        {result.analysis}
-      </p>
-    </div>
-
-  </div>
-)}
       </div>
 
-      {/* Bottom note */}
+      {/* Bottom Note */}
       <p style={{ marginTop: '24px', color: '#999', fontSize: '13px' }}>
         Your calls are private and secure 🔒
       </p>
