@@ -1,22 +1,45 @@
- /* index.css - Global styles for entire app */
+/* index.css - Global styles */
 
-/* This applies to everything on the page */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Main body styling */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f0f2f5;
   color: #333;
 }
 
-/* Button hover effect */
 button:hover {
   opacity: 0.9;
   transform: scale(1.02);
   transition: all 0.2s;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f0f0f0;
+  border-top: 4px solid #4361ee;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fadeIn {
+  animation: fadeIn 0.4s ease;
 }

@@ -199,6 +199,18 @@ navigate('/analysis', { state: { result: data, callId: savedCall.id } })
           }}
         >
           {isUploading ? '⏳ Analyzing... Please wait' : '🚀 Upload & Analyze'}
+          {/* Loading Animation */}
+{isUploading && (
+  <div style={{ textAlign: 'center', marginTop: '20px' }}>
+    <div className="spinner"></div>
+    <p style={{ color: '#666', fontSize: '14px' }}>
+      🎙️ Transcribing audio...
+    </p>
+    <p style={{ color: '#999', fontSize: '12px', marginTop: '6px' }}>
+      This may take 2-4 minutes ⏳
+    </p>
+  </div>
+)}
         </button>
 
         {/* Error Message */}
