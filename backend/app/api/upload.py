@@ -1,6 +1,3 @@
-# upload.py
-# Now includes transcription + analysis!
-
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.transcription import transcribe_audio
 from app.services.analysis import analyze_call
@@ -17,16 +14,6 @@ def allowed_file(filename):
 
 @router.post("/upload")
 async def upload_call(file: UploadFile = File(...)):
-    """
-    Main upload endpoint
-    
-    Steps:
-    1. Validate file type
-    2. Save file temporarily  
-    3. Transcribe audio → text
-    4. Analyze transcript with AI
-    5. Return everything to frontend
-    """
 
     # Step 1: Check file type
     if not allowed_file(file.filename):
@@ -36,15 +23,15 @@ async def upload_call(file: UploadFile = File(...)):
         )
 
     # Step 2: Save file temporarily
-    temp_dir = tempfile.gettempdir()
+    temp_dir  = tempfile.gettempdir()
     temp_path = os.path.join(temp_dir, file.filename)
+    content   = await file.read()
 
-    content = await file.read()
     with open(temp_path, "wb") as f:
         f.write(content)
 
     try:
-        # Step 3: Transcribe audio to text
+        # Step 3: Transcribe audio
         print("Starting transcription...")
         transcription_result = transcribe_audio(temp_path)
 
@@ -60,15 +47,19 @@ async def upload_call(file: UploadFile = File(...)):
         print("Starting AI analysis...")
         analysis_result = analyze_call(transcript)
 
-        # Step 5: Return everything
+        # Step 5: Print to verify parsed exists
+        print("PARSED CHECK:", analysis_result.get("parsed"))
+
+        # Step 6: Return everything including parsed
         return {
-            "message": "Analysis complete!",
-            "filename": file.filename,
-            "size_mb": round(len(content) / (1024 * 1024), 2),
+            "message":    "Analysis complete!",
+            "filename":   file.filename,
+            "size_mb":    round(len(content) / (1024 * 1024), 2),
             "transcript": transcript,
-            "language": transcription_result["language"],
-            "analysis": analysis_result["analysis"],
-            "status": "completed"
+            "language":   transcription_result["language"],
+            "analysis":   analysis_result["analysis"],
+            "parsed":     analysis_result["parsed"],
+            "status":     "completed"
         }
 
     except HTTPException:
@@ -78,6 +69,5 @@ async def upload_call(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
     finally:
-        # Always clean up temp file
         if os.path.exists(temp_path):
             os.remove(temp_path)

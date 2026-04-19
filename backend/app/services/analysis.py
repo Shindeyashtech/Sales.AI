@@ -1,73 +1,190 @@
 # analysis.py
-# This service sends transcript to Llama3
-# And gets AI coaching feedback
-
 import requests
-import json
 
-# Ollama runs locally on port 11434
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "llama3"
 
 def analyze_call(transcript: str) -> dict:
-    """
-    Send transcript to Llama3 for analysis
-    
-    Input:  transcript → the text from audio
-    Output: AI coaching feedback
-    """
-    
-    # This is our prompt
-    # We tell AI exactly what to analyze
-    prompt = f"""
-You are an expert AI sales coach. 
-Analyze this sales call transcript carefully.
 
-Provide your analysis in this EXACT format:
+    prompt = f"""You are an expert AI sales coach.
+Analyze this sales call transcript.
+Reply in EXACTLY this format on separate lines:
 
-SENTIMENT: [positive/negative/neutral]
-CUSTOMER_MOOD: [one sentence about customer mood]
-OBJECTIONS: [list the objections customer raised]
-SALESPERSON_SCORE: [score out of 10]
-STRENGTHS: [what salesperson did well]
-WEAKNESSES: [what salesperson needs to improve]
-COACHING_TIPS: [3 specific actionable tips]
-SUMMARY: [2 sentence overall summary]
+SENTIMENT: positive
+CUSTOMER_MOOD: write one sentence here
+OBJECTIONS: objection1, objection2, objection3
+SCORE: 7
+STRENGTHS: strength1, strength2, strength3
+WEAKNESSES: weakness1, weakness2, weakness3
+TIP1: write first tip here
+TIP2: write second tip here
+TIP3: write third tip here
+SUMMARY: write two sentences here
 
-Sales Call Transcript:
+Do NOT add any extra text before or after.
+Do NOT combine lines together.
+Each item MUST be on its own line.
+
+Transcript:
 {transcript}
 """
 
     try:
         print("Sending transcript to Llama3...")
-        
-        # Send request to Ollama
+
         response = requests.post(
             OLLAMA_URL,
             json={
                 "model": MODEL_NAME,
                 "prompt": prompt,
-                "stream": False  # Wait for complete response
+                "stream": False
             },
-            timeout=120  # Wait max 2 minutes
+            timeout=120
         )
-        
+
         response.raise_for_status()
-        
-        # Get AI response
         ai_response = response.json()["response"]
-        
-        print("Analysis complete!")
-        
+
+        print("=== LLAMA3 RESPONSE ===")
+        print(ai_response)
+        print("=== END ===")
+
+        parsed = parse_analysis(ai_response)
+
+        print("=== PARSED RESULT ===")
+        print(parsed)
+        print("=== END ===")
+
         return {
             "success": True,
-            "analysis": ai_response
+            "analysis": ai_response,
+            "parsed": parsed
         }
-        
+
     except Exception as e:
         print(f"Analysis failed: {str(e)}")
         return {
             "success": False,
             "error": str(e),
-            "analysis": None
+            "analysis": None,
+            "parsed": None
         }
+
+
+def parse_analysis(text: str) -> dict:
+
+    result = {
+        "sentiment": "neutral",
+        "customer_mood": "Not available",
+        "objections": [],
+        "score": 0,
+        "strengths": [],
+        "weaknesses": [],
+        "tips": [],
+        "summary": "Not available"
+    }
+
+    try:
+        # Clean the text first
+        text = text.strip()
+
+        # Split into lines
+        lines = text.split('\n')
+
+        for line in lines:
+            line = line.strip()
+
+            # Skip empty lines
+            if not line:
+                continue
+
+            # Skip lines without colon
+            if ':' not in line:
+                continue
+
+            # Split into key and value
+            key, _, value = line.partition(':')
+            key   = key.strip().upper().replace(' ', '_')
+            value = value.strip()
+
+            # Skip empty values
+            if not value:
+                continue
+
+            print(f"Parsing → KEY: '{key}' VALUE: '{value}'")
+
+            if key == 'SENTIMENT':
+                result['sentiment'] = value.lower()
+
+            elif key == 'CUSTOMER_MOOD':
+                result['customer_mood'] = value
+
+            elif key == 'OBJECTIONS':
+                    if value.lower() in ['none', 'none explicitly stated', 'no objections']:
+                        result['objections'] = []
+                    else:
+                        items = value.split(',')
+                        cleaned = []
+                        for item in items:
+                            # Remove "objection1=" prefix
+                            if '=' in item:
+                                item = item.split('=', 1)[1]
+                            item = item.strip()
+                            # Skip empty or "None" values
+                            if item and item.lower() != 'none':
+                                cleaned.append(item)
+                        result['objections'] = cleaned
+            elif key == 'SCORE':
+                try:
+                    result['score'] = int(
+                        value.split('/')[0]
+                            .split('.')[0]
+                            .strip()
+                    )
+                except:
+                    result['score'] = 5
+
+
+            elif key == 'STRENGTHS':
+                    items = value.split(',')
+                    cleaned = []
+                    for item in items:
+        # Remove "strength1=" prefix
+                        if '=' in item:
+                            item = item.split('=', 1)[1]
+                        item = item.strip()
+                        if item and item.lower() != 'none':
+                            cleaned.append(item)
+                    result['strengths'] = cleaned
+
+
+
+
+            elif key == 'WEAKNESSES':
+                items = value.split(',')
+                cleaned = []
+                for item in items:
+                                        # Remove "weakness1=" #
+                                        if '=' in item:
+                                            item = item.split('=', 1)[1]
+                                            item = item.strip()
+                                        if item and item.lower() != 'none':
+                                            cleaned.append(item)
+                                        result['weaknesses'] = cleaned
+
+            elif key == 'TIP1':
+                result['tips'].append(value)
+
+            elif key == 'TIP2':
+                result['tips'].append(value)
+
+            elif key == 'TIP3':
+                result['tips'].append(value)
+
+            elif key == 'SUMMARY':
+                result['summary'] = value
+
+    except Exception as e:
+        print(f"Parsing error: {str(e)}")
+
+    return result
