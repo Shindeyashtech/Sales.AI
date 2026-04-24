@@ -8,6 +8,8 @@ function AnalysisPage() {
   const location = useLocation()
   const navigate = useNavigate()
   const result   = location.state?.result
+  console.log("RESULT FROM STATE:", result)
+  console.log("PARSED FROM STATE:", result?.parsed)
 
   // If no data found
   if (!result) {
