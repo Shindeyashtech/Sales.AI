@@ -1,4 +1,5 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Form
+# from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.services.transcription import transcribe_audio
 from app.services.analysis import analyze_call
 import os
@@ -13,8 +14,10 @@ def allowed_file(filename):
     return extension in ALLOWED_EXTENSIONS
 
 @router.post("/upload")
-async def upload_call(file: UploadFile = File(...)):
-
+async def upload_call(
+    file: UploadFile = File(...),
+    salesperson_name: str = Form("Unknown")
+):
     # Step 1: Check file type
     if not allowed_file(file.filename):
         raise HTTPException(
@@ -52,15 +55,16 @@ async def upload_call(file: UploadFile = File(...)):
 
         # Step 6: Return everything including parsed
         return {
-            "message":    "Analysis complete!",
-            "filename":   file.filename,
-            "size_mb":    round(len(content) / (1024 * 1024), 2),
-            "transcript": transcript,
-            "language":   transcription_result["language"],
-            "analysis":   analysis_result["analysis"],
-            "parsed":     analysis_result["parsed"],
-            "status":     "completed"
-        }
+    "message":          "Analysis complete!",
+    "filename":         file.filename,
+    "salesperson_name": salesperson_name,
+    "size_mb":          round(len(content) / (1024 * 1024), 2),
+    "transcript":       transcript,
+    "language":         transcription_result["language"],
+    "analysis":         analysis_result["analysis"],
+    "parsed":           analysis_result["parsed"],
+    "status":           "completed"
+}
 
     except HTTPException:
         raise
