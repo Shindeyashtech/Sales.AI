@@ -1,15 +1,19 @@
 // AnalysisPage.jsx
-// Beautiful structured analysis page
+// Beautiful analysis page with charts!
 
 import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  RadarChart, Radar, PolarGrid, PolarAngleAxis,
+  PolarRadiusAxis, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, Cell
+} from 'recharts'
 
 function AnalysisPage() {
 
   const location = useLocation()
   const navigate = useNavigate()
   const result   = location.state?.result
-  console.log("RESULT FROM STATE:", result)
-  console.log("PARSED FROM STATE:", result?.parsed)
 
   // If no data found
   if (!result) {
@@ -37,17 +41,14 @@ function AnalysisPage() {
             cursor: 'pointer'
           }}
         >
-          ← Go to Upload Page
+          Go to Upload Page
         </button>
       </div>
     )
   }
 
   // Get parsed data
-  // If no parsed data use empty defaults
-  const parsed = result.parsed || {}
-  console.log("PARSED DATA:", parsed)
-console.log("FULL RESULT:", result)
+  const parsed     = result.parsed || {}
   const sentiment  = parsed.sentiment    || 'neutral'
   const score      = parsed.score        || 0
   const objections = parsed.objections   || []
@@ -57,12 +58,12 @@ console.log("FULL RESULT:", result)
   const summary    = parsed.summary      || result.analysis
   const mood       = parsed.customer_mood || 'Not available'
 
-  // Sentiment color
-  const sentimentColor = 
+  // Sentiment colors
+  const sentimentColor =
     sentiment === 'positive' ? '#16a34a' :
     sentiment === 'negative' ? '#dc2626' : '#d97706'
 
-  const sentimentBg = 
+  const sentimentBg =
     sentiment === 'positive' ? '#f0fff4' :
     sentiment === 'negative' ? '#fff0f0' : '#fffbeb'
 
@@ -70,10 +71,63 @@ console.log("FULL RESULT:", result)
     sentiment === 'positive' ? '😊' :
     sentiment === 'negative' ? '😟' : '😐'
 
-  // Score color
   const scoreColor =
     score >= 8 ? '#16a34a' :
     score >= 5 ? '#d97706' : '#dc2626'
+
+  // ── Chart Data ──────────────────────────────
+
+  // Radar chart data
+  // Shows multiple skills at once
+  const radarData = [
+    {
+      skill: 'Score',
+      value: score * 10  // convert to percentage
+    },
+    {
+      skill: 'Strengths',
+      value: Math.min(strengths.length * 25, 100)
+    },
+    {
+      skill: 'Objections',
+      // fewer objections = better score
+      value: Math.max(100 - (objections.length * 25), 0)
+    },
+    {
+      skill: 'Sentiment',
+      value: sentiment === 'positive' ? 100 :
+             sentiment === 'neutral'  ? 50  : 20
+    },
+    {
+      skill: 'Tips Used',
+      value: Math.min(tips.length * 33, 100)
+    },
+  ]
+
+  // Bar chart data
+  // Strengths vs Weaknesses
+  const barData = [
+    {
+      name: 'Strengths',
+      value: strengths.length,
+      color: '#16a34a'
+    },
+    {
+      name: 'Weaknesses',
+      value: weaknesses.length,
+      color: '#dc2626'
+    },
+    {
+      name: 'Objections',
+      value: objections.length,
+      color: '#d97706'
+    },
+    {
+      name: 'Tips',
+      value: tips.length,
+      color: '#4361ee'
+    },
+  ]
 
   return (
     <div style={{
@@ -82,7 +136,7 @@ console.log("FULL RESULT:", result)
       padding: '30px 20px'
     }}>
 
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '960px', margin: '0 auto' }}>
 
         {/* Page Title */}
         <h2 style={{
@@ -92,7 +146,81 @@ console.log("FULL RESULT:", result)
         }}>
           📊 Call Analysis Report
         </h2>
+        {/* Call Information Card */}
+<div style={{
+  backgroundColor: 'white',
+  borderRadius: '16px',
+  padding: '24px',
+  boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+  marginBottom: '20px'
+}}>
+  <h3 style={{ color: '#1a1a2e', marginBottom: '16px' }}>
+    📋 Call Information
+  </h3>
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr 1fr',
+    gap: '16px'
+  }}>
 
+    {/* Salesperson */}
+    <div style={{
+      backgroundColor: '#f8faff',
+      borderRadius: '10px',
+      padding: '16px'
+    }}>
+      <p style={{ color: '#666', fontSize: '12px' }}>
+        SALESPERSON
+      </p>
+      <p style={{ fontWeight: '600', color: '#4361ee' }}>
+        👤 {result.salesperson_name || 'Unknown'}
+      </p>
+    </div>
+
+    {/* File Name */}
+    <div style={{
+      backgroundColor: '#f8faff',
+      borderRadius: '10px',
+      padding: '16px'
+    }}>
+      <p style={{ color: '#666', fontSize: '12px' }}>
+        FILE NAME
+      </p>
+      <p style={{ fontWeight: '600', color: '#1a1a2e' }}>
+        📁 {result.filename}
+      </p>
+    </div>
+
+    {/* File Size */}
+    <div style={{
+      backgroundColor: '#f8faff',
+      borderRadius: '10px',
+      padding: '16px'
+    }}>
+      <p style={{ color: '#666', fontSize: '12px' }}>
+        FILE SIZE
+      </p>
+      <p style={{ fontWeight: '600', color: '#1a1a2e' }}>
+        📦 {result.size_mb} MB
+      </p>
+    </div>
+
+    {/* Language */}
+    <div style={{
+      backgroundColor: '#f8faff',
+      borderRadius: '10px',
+      padding: '16px'
+    }}>
+      <p style={{ color: '#666', fontSize: '12px' }}>
+        LANGUAGE
+      </p>
+      <p style={{ fontWeight: '600', color: '#1a1a2e' }}>
+        🌐 {result.language}
+      </p>
+    </div>
+
+  </div>
+</div>
         {/* Top Stats Cards */}
         <div style={{
           display: 'grid',
@@ -109,17 +237,47 @@ console.log("FULL RESULT:", result)
             boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
             textAlign: 'center'
           }}>
-            <p style={{ color: '#666', fontSize: '12px', marginBottom: '8px' }}>
+            <p style={{ color: '#666', fontSize: '12px' }}>
               PERFORMANCE SCORE
             </p>
             <p style={{
-              fontSize: '48px',
+              fontSize: '56px',
               fontWeight: 'bold',
               color: scoreColor
             }}>
               {score}
             </p>
-            <p style={{ color: '#999', fontSize: '13px' }}>out of 10</p>
+            <p style={{ color: '#999', fontSize: '13px' }}>
+              out of 10
+            </p>
+            {/* Score Label */}
+<p style={{
+  marginTop: '8px',
+  fontSize: '13px',
+  fontWeight: '600',
+  color: scoreColor
+}}>
+  {score >= 8 ? '🌟 Excellent!'  :
+   score >= 6 ? '👍 Good'        :
+   score >= 4 ? '⚠️ Needs Work'  :
+                '❌ Poor'}
+</p>
+            {/* Score Progress Bar */}
+            <div style={{
+              marginTop: '10px',
+              backgroundColor: '#f0f0f0',
+              borderRadius: '10px',
+              height: '8px',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: `${score * 10}%`,
+                backgroundColor: scoreColor,
+                height: '100%',
+                borderRadius: '10px',
+                transition: 'width 1s ease'
+              }} />
+            </div>
           </div>
 
           {/* Sentiment Card */}
@@ -130,14 +288,16 @@ console.log("FULL RESULT:", result)
             boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
             textAlign: 'center'
           }}>
-            <p style={{ color: '#666', fontSize: '12px', marginBottom: '8px' }}>
+            <p style={{ color: '#666', fontSize: '12px' }}>
               SENTIMENT
             </p>
-            <p style={{ fontSize: '40px' }}>{sentimentEmoji}</p>
+            <p style={{ fontSize: '48px', margin: '8px 0' }}>
+              {sentimentEmoji}
+            </p>
             <p style={{
               color: sentimentColor,
               fontWeight: '700',
-              fontSize: '16px',
+              fontSize: '18px',
               textTransform: 'capitalize'
             }}>
               {sentiment}
@@ -152,19 +312,183 @@ console.log("FULL RESULT:", result)
             boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
             textAlign: 'center'
           }}>
-            <p style={{ color: '#666', fontSize: '12px', marginBottom: '8px' }}>
+            <p style={{ color: '#666', fontSize: '12px' }}>
               OBJECTIONS FOUND
             </p>
             <p style={{
-              fontSize: '48px',
+              fontSize: '56px',
               fontWeight: 'bold',
               color: objections.length > 0 ? '#dc2626' : '#16a34a'
             }}>
               {objections.length}
             </p>
-            <p style={{ color: '#999', fontSize: '13px' }}>objections</p>
+            <p style={{ color: '#999', fontSize: '13px' }}>
+              objections
+            </p>
           </div>
 
+        </div>
+
+        {/* ── CHARTS ROW ───────────────────── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '16px',
+          marginBottom: '20px'
+        }}>
+
+          {/* Radar Chart */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
+          }}>
+            <h3 style={{
+              color: '#1a1a2e',
+              marginBottom: '16px',
+              fontSize: '15px'
+            }}>
+              🕸️ Performance Radar
+            </h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <RadarChart data={radarData}>
+                <PolarGrid stroke="#e2e8f0" />
+                <PolarAngleAxis
+                  dataKey="skill"
+                  tick={{ fontSize: 12, fill: '#666' }}
+                />
+                <PolarRadiusAxis
+                  angle={30}
+                  domain={[0, 100]}
+                  tick={{ fontSize: 10, fill: '#999' }}
+                />
+                <Radar
+                  name="Performance"
+                  dataKey="value"
+                  stroke="#4361ee"
+                  fill="#4361ee"
+                  fillOpacity={0.3}
+                />
+                <Tooltip
+                  formatter={(value) => [`${value}%`, 'Score']}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Bar Chart */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '24px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
+          }}>
+            <h3 style={{
+              color: '#1a1a2e',
+              marginBottom: '16px',
+              fontSize: '15px'
+            }}>
+              📊 Call Breakdown
+            </h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={barData}>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="#f0f0f0"
+                />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 12, fill: '#666' }}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  tick={{ fontSize: 12, fill: '#666' }}
+                />
+                <Tooltip />
+                <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+                  {barData.map((entry, index) => (
+                    <Cell
+                      key={index}
+                      fill={entry.color}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+        </div>
+
+        {/* Score Gauge Progress */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '24px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{ color: '#1a1a2e', marginBottom: '20px' }}>
+            🎯 Detailed Score Breakdown
+          </h3>
+
+          {/* Score bars for each metric */}
+          {[
+            {
+              label: '⭐ Overall Score',
+              value: score * 10,
+              color: scoreColor
+            },
+            {
+              label: '💪 Strengths',
+              value: Math.min(strengths.length * 25, 100),
+              color: '#16a34a'
+            },
+            {
+              label: '😊 Sentiment',
+              value: sentiment === 'positive' ? 100 :
+                     sentiment === 'neutral'  ? 50  : 20,
+              color: sentimentColor
+            },
+            {
+              label: '🚫 Objection Control',
+              value: Math.max(100 - objections.length * 25, 0),
+              color: '#4361ee'
+            },
+          ].map((item, index) => (
+            <div key={index} style={{ marginBottom: '16px' }}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginBottom: '6px'
+              }}>
+                <span style={{ fontSize: '14px', color: '#334155' }}>
+                  {item.label}
+                </span>
+                <span style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: item.color
+                }}>
+                  {item.value}%
+                </span>
+              </div>
+              <div style={{
+                backgroundColor: '#f0f0f0',
+                borderRadius: '10px',
+                height: '10px',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  width: `${item.value}%`,
+                  backgroundColor: item.color,
+                  height: '100%',
+                  borderRadius: '10px',
+                  transition: 'width 1s ease'
+                }} />
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Customer Mood */}
@@ -175,8 +499,14 @@ console.log("FULL RESULT:", result)
           boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
           marginBottom: '20px'
         }}>
-          <p style={{ color: '#666', fontSize: '13px' }}>CUSTOMER MOOD</p>
-          <p style={{ color: '#1a1a2e', fontSize: '15px', marginTop: '6px' }}>
+          <p style={{ color: '#666', fontSize: '13px' }}>
+            CUSTOMER MOOD
+          </p>
+          <p style={{
+            color: '#1a1a2e',
+            fontSize: '15px',
+            marginTop: '6px'
+          }}>
             💭 {mood}
           </p>
         </div>
@@ -209,7 +539,10 @@ console.log("FULL RESULT:", result)
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '8px',
-                  marginBottom: '10px'
+                  marginBottom: '10px',
+                  backgroundColor: '#f0fff4',
+                  padding: '10px',
+                  borderRadius: '8px'
                 }}>
                   <span style={{ color: '#16a34a' }}>✓</span>
                   <p style={{ color: '#334155', fontSize: '14px' }}>
@@ -240,7 +573,10 @@ console.log("FULL RESULT:", result)
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '8px',
-                  marginBottom: '10px'
+                  marginBottom: '10px',
+                  backgroundColor: '#fff0f0',
+                  padding: '10px',
+                  borderRadius: '8px'
                 }}>
                   <span style={{ color: '#dc2626' }}>✗</span>
                   <p style={{ color: '#334155', fontSize: '14px' }}>
@@ -253,7 +589,7 @@ console.log("FULL RESULT:", result)
 
         </div>
 
-        {/* Objections List */}
+        {/* Objections */}
         {objections.length > 0 && (
           <div style={{
             backgroundColor: 'white',
@@ -322,7 +658,11 @@ console.log("FULL RESULT:", result)
                 }}>
                   {index + 1}
                 </div>
-                <p style={{ color: '#334155', fontSize: '14px', lineHeight: '1.6' }}>
+                <p style={{
+                  color: '#334155',
+                  fontSize: '14px',
+                  lineHeight: '1.6'
+                }}>
                   {tip}
                 </p>
               </div>
@@ -379,7 +719,8 @@ console.log("FULL RESULT:", result)
         <div style={{
           display: 'flex',
           gap: '16px',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          marginBottom: '40px'
         }}>
           <button
             onClick={() => navigate('/')}
