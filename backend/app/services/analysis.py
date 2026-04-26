@@ -50,6 +50,9 @@ Transcript:
         print("=== END ===")
 
         parsed = parse_analysis(ai_response)
+        our_score = calculate_score(parsed)
+        parsed['score'] = our_score
+        print(f"Our calculated score: {our_score}")
 
         print("=== PARSED RESULT ===")
         print(parsed)
@@ -70,6 +73,64 @@ Transcript:
             "parsed": None
         }
 
+def calculate_score(parsed: dict) -> int:
+    """
+    Calculate our own smart score
+    Based on multiple factors
+    
+    Formula:
+    - Base score: 5
+    - Sentiment positive  → +2
+    - Sentiment negative  → -2
+    - Sentiment neutral   → +0
+    - Each strength       → +0.5
+    - Each weakness       → -0.5
+    - Each objection      → -0.5
+    - Min score: 1
+    - Max score: 10
+    """
+
+    score = 5.0  # start with base score
+
+    # Sentiment impact
+    sentiment = parsed.get('sentiment', 'neutral')
+    if sentiment == 'positive':
+        score += 2
+    elif sentiment == 'negative':
+        score -= 2
+
+    # Strengths impact
+    strengths = parsed.get('strengths', [])
+    score += len(strengths) * 0.5
+
+    # Weaknesses impact
+    weaknesses = parsed.get('weaknesses', [])
+    score -= len(weaknesses) * 0.5
+
+    # Objections impact
+    objections = parsed.get('objections', [])
+    score -= len(objections) * 0.5
+
+    # Tips available bonus
+    tips = parsed.get('tips', [])
+    if len(tips) >= 3:
+        score += 0.5
+
+    # Keep score between 1 and 10
+    score = max(1, min(10, score))
+
+    # Round to nearest whole number
+    final_score = round(score)
+
+    print(f"Score Calculation:")
+    print(f"  Base:       5.0")
+    print(f"  Sentiment:  {sentiment}")
+    print(f"  Strengths:  +{len(strengths) * 0.5}")
+    print(f"  Weaknesses: -{len(weaknesses) * 0.5}")
+    print(f"  Objections: -{len(objections) * 0.5}")
+    print(f"  Final:      {final_score}")
+
+    return final_score
 
 def parse_analysis(text: str) -> dict:
 
