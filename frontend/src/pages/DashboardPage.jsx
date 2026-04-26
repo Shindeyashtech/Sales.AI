@@ -14,12 +14,48 @@ function DashboardPage() {
 
   const navigate    = useNavigate()
   const [calls, setCalls] = useState([])
+  const [searchQuery, setSearchQuery]   = useState('')
+const [filterSentiment, setFilterSentiment] = useState('All')
+const [sortBy, setSortBy]             = useState('newest')
 
   // Load calls when page opens
   useEffect(() => {
     const savedCalls = getCalls()
     setCalls(savedCalls)
   }, [])
+
+  // Filter + Search + Sort calls
+const filteredCalls = calls
+  .filter(call => {
+
+    // Search filter
+    const matchesSearch =
+      call.filename.toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      (call.salesperson_name || '')
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+
+    // Sentiment filter
+    const matchesSentiment =
+      filterSentiment === 'All' ||
+      call.parsed?.sentiment === filterSentiment.toLowerCase()
+
+    return matchesSearch && matchesSentiment
+  })
+  .sort((a, b) => {
+    // Sort by selected option
+    if (sortBy === 'newest') {
+      return b.id - a.id
+    } else if (sortBy === 'oldest') {
+      return a.id - b.id
+    } else if (sortBy === 'highest') {
+      return (b.parsed?.score || 0) - (a.parsed?.score || 0)
+    } else if (sortBy === 'lowest') {
+      return (a.parsed?.score || 0) - (b.parsed?.score || 0)
+    }
+    return 0
+  })
 
   // Delete a call
   function handleDelete(id) {
@@ -284,17 +320,106 @@ function DashboardPage() {
 
           </div>
         )}
+{/* Calls List */}
+<div style={{
+  backgroundColor: 'white',
+  borderRadius: '16px',
+  padding: '24px',
+  boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
+}}>
+  <h2 style={{ color: '#1a1a2e', marginBottom: '20px' }}>
+    📋 Recent Calls
+  </h2>
 
-        {/* Calls List */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '16px',
-          padding: '24px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
-        }}>
-          <h2 style={{ color: '#1a1a2e', marginBottom: '20px' }}>
-            📋 Recent Calls
-          </h2>
+  {/* Search and Filter Bar */}
+  <div style={{
+    display: 'grid',
+    gridTemplateColumns: '2fr 1fr 1fr',
+    gap: '12px',
+    marginBottom: '20px'
+  }}>
+
+    {/* Search Input */}
+    <div style={{ position: 'relative' }}>
+      <span style={{
+        position: 'absolute',
+        left: '12px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        fontSize: '16px'
+      }}>
+        🔍
+      </span>
+      <input
+        type="text"
+        placeholder="Search by name or filename..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '10px 12px 10px 38px',
+          border: '1px solid #e2e8f0',
+          borderRadius: '10px',
+          fontSize: '14px',
+          outline: 'none',
+          boxSizing: 'border-box',
+          color: '#1a1a2e'
+        }}
+      />
+    </div>
+
+    {/* Sentiment Filter */}
+    <select
+      value={filterSentiment}
+      onChange={(e) => setFilterSentiment(e.target.value)}
+      style={{
+        padding: '10px 12px',
+        border: '1px solid #e2e8f0',
+        borderRadius: '10px',
+        fontSize: '14px',
+        outline: 'none',
+        color: '#1a1a2e',
+        backgroundColor: 'white',
+        cursor: 'pointer'
+      }}
+    >
+      <option value="All">😊 All Sentiments</option>
+      <option value="Positive">😊 Positive</option>
+      <option value="Neutral">😐 Neutral</option>
+      <option value="Negative">😟 Negative</option>
+    </select>
+
+    {/* Sort By */}
+    <select
+      value={sortBy}
+      onChange={(e) => setSortBy(e.target.value)}
+      style={{
+        padding: '10px 12px',
+        border: '1px solid #e2e8f0',
+        borderRadius: '10px',
+        fontSize: '14px',
+        outline: 'none',
+        color: '#1a1a2e',
+        backgroundColor: 'white',
+        cursor: 'pointer'
+      }}
+    >
+      <option value="newest">🕐 Newest First</option>
+      <option value="oldest">🕐 Oldest First</option>
+      <option value="highest">⬆️ Highest Score</option>
+      <option value="lowest">⬇️ Lowest Score</option>
+    </select>
+
+  </div>
+
+  {/* Results count */}
+  <p style={{
+    color: '#666',
+    fontSize: '13px',
+    marginBottom: '16px'
+  }}>
+    Showing {filteredCalls.length} of {calls.length} calls
+  </p>
 
           {/* Empty state */}
           {calls.length === 0 && (
@@ -325,8 +450,38 @@ function DashboardPage() {
           )}
 
           {/* Calls */}
-          {calls.map((call) => (
-            <div
+{filteredCalls.length === 0 && calls.length > 0 && (
+  <div style={{
+    textAlign: 'center',
+    padding: '40px',
+    color: '#999'
+  }}>
+    <p style={{ fontSize: '40px' }}>🔍</p>
+    <p style={{ marginTop: '10px' }}>
+      No calls found for "{searchQuery}"
+    </p>
+    <button
+      onClick={() => {
+        setSearchQuery('')
+        setFilterSentiment('All')
+      }}
+      style={{
+        marginTop: '12px',
+        backgroundColor: '#4361ee',
+        color: 'white',
+        padding: '8px 20px',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: 'pointer'
+      }}
+    >
+      Clear Search
+    </button>
+  </div>
+)}
+
+{filteredCalls.map((call) => (
+              <div
               key={call.id}
               style={{
                 border: '1px solid #e2e8f0',
