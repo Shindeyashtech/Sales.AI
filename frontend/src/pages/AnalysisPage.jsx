@@ -1,7 +1,9 @@
 // AnalysisPage.jsx
 // Beautiful analysis page with charts!
-
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useRef, useState } from 'react'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
   PolarRadiusAxis, ResponsiveContainer,
@@ -11,9 +13,11 @@ import {
 
 function AnalysisPage() {
 
-  const location = useLocation()
-  const navigate = useNavigate()
-  const result   = location.state?.result
+   const location    = useLocation()
+const navigate    = useNavigate()
+const result      = location.state?.result
+const reportRef   = useRef(null)
+const [exporting, setExporting] = useState(false)
 
   // If no data found
   if (!result) {
@@ -46,6 +50,72 @@ function AnalysisPage() {
       </div>
     )
   }
+// PDF Export function
+async function handleExportPDF() {
+  try {
+    setExporting(true)
+
+    // Get the report div
+    const reportElement = reportRef.current
+
+    // Take screenshot of entire report
+    const canvas = await html2canvas(reportElement, {
+      scale: 2,           // higher quality
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#f0f2f5'
+    })
+
+    // Convert to image
+    const imgData = canvas.toDataURL('image/png')
+
+    // Create PDF
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    })
+
+    // A4 dimensions
+    const pdfWidth  = pdf.internal.pageSize.getWidth()
+    const pdfHeight = pdf.internal.pageSize.getHeight()
+
+    // Calculate image dimensions
+    const imgWidth  = canvas.width
+    const imgHeight = canvas.height
+    const ratio     = imgWidth / imgHeight
+    const imgPDFHeight = pdfWidth / ratio
+
+    // If content is longer than one page
+    // split into multiple pages
+    let heightLeft = imgPDFHeight
+    let position   = 0
+
+    // Add first page
+    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgPDFHeight)
+    heightLeft -= pdfHeight
+
+    // Add more pages if needed
+    while (heightLeft > 0) {
+      position = heightLeft - imgPDFHeight
+      pdf.addPage()
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgPDFHeight)
+      heightLeft -= pdfHeight
+    }
+
+    // Save the PDF
+    const fileName = `Sales_Report_${result.salesperson_name || 'Unknown'}_${result.filename}.pdf`
+    pdf.save(fileName)
+
+    console.log("PDF exported successfully!")
+
+  } catch (error) {
+    console.error("PDF export failed:", error)
+    alert("PDF export failed. Please try again!")
+  } finally {
+    setExporting(false)
+  }
+}
 
   // Get parsed data
   const parsed     = result.parsed || {}
@@ -136,7 +206,7 @@ function AnalysisPage() {
       padding: '30px 20px'
     }}>
 
-      <div style={{ maxWidth: '960px', margin: '0 auto' }}>
+<div ref={reportRef} style={{ maxWidth: '960px', margin: '0 auto' }}>
 
         {/* Page Title */}
         <h2 style={{
@@ -715,44 +785,67 @@ function AnalysisPage() {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div style={{
-          display: 'flex',
-          gap: '16px',
-          justifyContent: 'center',
-          marginBottom: '40px'
-        }}>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              backgroundColor: 'white',
-              color: '#4361ee',
-              padding: '14px 32px',
-              border: '2px solid #4361ee',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontSize: '15px',
-              fontWeight: '600'
-            }}
-          >
-            ← Analyze Another Call
-          </button>
-          <button
-            onClick={() => navigate('/dashboard')}
-            style={{
-              backgroundColor: '#4361ee',
-              color: 'white',
-              padding: '14px 32px',
-              border: 'none',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              fontSize: '15px',
-              fontWeight: '600'
-            }}
-          >
-            View Dashboard →
-          </button>
-        </div>
+         {/* Action Buttons */}
+<div style={{
+  display: 'flex',
+  gap: '16px',
+  justifyContent: 'center',
+  marginBottom: '40px',
+  flexWrap: 'wrap'
+}}>
+  {/* Analyze Another Call */}
+  <button
+    onClick={() => navigate('/')}
+    style={{
+      backgroundColor: 'white',
+      color: '#4361ee',
+      padding: '14px 32px',
+      border: '2px solid #4361ee',
+      borderRadius: '10px',
+      cursor: 'pointer',
+      fontSize: '15px',
+      fontWeight: '600'
+    }}
+  >
+    ← Analyze Another Call
+  </button>
+
+  {/* Export PDF Button */}
+  <button
+    onClick={handleExportPDF}
+    disabled={exporting}
+    style={{
+      backgroundColor: exporting ? '#94a3b8' : '#7209b7',
+      color: 'white',
+      padding: '14px 32px',
+      border: 'none',
+      borderRadius: '10px',
+      cursor: exporting ? 'not-allowed' : 'pointer',
+      fontSize: '15px',
+      fontWeight: '600'
+    }}
+  >
+    {exporting ? '⏳ Exporting...' : '📄 Export PDF'}
+  </button>
+
+  {/* View Dashboard */}
+  <button
+    onClick={() => navigate('/dashboard')}
+    style={{
+      backgroundColor: '#4361ee',
+      color: 'white',
+      padding: '14px 32px',
+      border: 'none',
+      borderRadius: '10px',
+      cursor: 'pointer',
+      fontSize: '15px',
+      fontWeight: '600'
+    }}
+  >
+    View Dashboard →
+  </button>
+
+</div>
 
       </div>
     </div>
