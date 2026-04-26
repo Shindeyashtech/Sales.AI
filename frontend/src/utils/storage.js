@@ -61,16 +61,17 @@ export function saveCall(callData) {
     const existing = getCalls()
 
     const newCall = {
-        id:         Date.now(),
-        date:       new Date().toLocaleDateString(),
-        time:       new Date().toLocaleTimeString(),
-        filename:   callData.filename,
-        size_mb:    callData.size_mb,
-        language:   callData.language,
-        transcript: callData.transcript,
-        analysis:   callData.analysis,
-        parsed:     callData.parsed || null,  // ← Save parsed data!
-    }
+    id:               Date.now(),
+    date:             new Date().toLocaleDateString(),
+    time:             new Date().toLocaleTimeString(),
+    filename:         callData.filename,
+    salesperson_name: callData.salesperson_name || 'Unknown',
+    size_mb:          callData.size_mb,
+    language:         callData.language,
+    transcript:       callData.transcript,
+    analysis:         callData.analysis,
+    parsed:           callData.parsed || null,
+}
 
     console.log("Saving call with parsed:", newCall.parsed)
 
