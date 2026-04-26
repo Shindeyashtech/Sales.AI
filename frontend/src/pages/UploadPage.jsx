@@ -5,6 +5,7 @@ function UploadPage() {
 
   const navigate = useNavigate()
   const [selectedFile, setSelectedFile] = useState(null)
+  const [salesName, setSalesName] = useState('')
   const [isDragging, setIsDragging]     = useState(false)
   const [isUploading, setIsUploading]   = useState(false)
   const [error, setError]               = useState(null)
@@ -33,18 +34,23 @@ function UploadPage() {
   }
 
   async function handleUpload() {
-    if (!selectedFile) {
-      alert('Please select a file first!')
-      return
-    }
+  if (!selectedFile) {
+    alert('Please select a file first!')
+    return
+  }
+
+  if (!salesName.trim()) {
+    alert('Please enter salesperson name!')
+    return
+  }
 
     try {
       setIsUploading(true)
       setError(null)
 
       const formData = new FormData()
-      formData.append('file', selectedFile)
-
+formData.append('file', selectedFile)
+formData.append('salesperson_name', salesName)
       const response = await fetch('http://localhost:8000/api/v1/upload', {
         method: 'POST',
         body: formData
@@ -106,7 +112,34 @@ navigate('/analysis', { state: { result: data, callId: savedCall.id } })
         <h2 style={{ marginBottom: '20px', color: '#1a1a2e' }}>
           Upload Sales Call
         </h2>
-
+{/* Salesperson Name Input */}
+<div style={{ marginBottom: '20px' }}>
+  <label style={{
+    display: 'block',
+    color: '#334155',
+    fontSize: '14px',
+    fontWeight: '600',
+    marginBottom: '8px'
+  }}>
+    👤 Salesperson Name
+  </label>
+  <input
+    type="text"
+    placeholder="Enter salesperson name..."
+    value={salesName}
+    onChange={(e) => setSalesName(e.target.value)}
+    style={{
+      width: '100%',
+      padding: '12px 16px',
+      border: '1px solid #e2e8f0',
+      borderRadius: '10px',
+      fontSize: '14px',
+      outline: 'none',
+      color: '#1a1a2e',
+      boxSizing: 'border-box'
+    }}
+  />
+</div>
         {/* Drag Drop Box */}
         <div
           onDragOver={handleDragOver}
