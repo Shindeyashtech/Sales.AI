@@ -68,7 +68,22 @@ function Navbar() {
         >
           📤 Upload
         </button>
-
+          {/* Coaching Link */}
+<button
+  onClick={() => navigate('/coaching')}
+  style={{
+    backgroundColor: isActive('/coaching') ? '#4361ee' : 'transparent',
+    color: isActive('/coaching') ? 'white' : '#666',
+    padding: '8px 18px',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: '500'
+  }}
+>
+  🎯 Coaching
+</button>
         {/* Dashboard Link */}
         <button
           onClick={() => navigate('/dashboard')}
