@@ -6,6 +6,7 @@ import Navbar from './components/Navbar'
 import UploadPage from './pages/UploadPage'
 import AnalysisPage from './pages/AnalysisPage'
 import DashboardPage from './pages/DashboardPage'
+import CoachingPage from './pages/CoachingPage'
 import './App.css'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/"          element={<UploadPage />} />
         <Route path="/analysis"  element={<AnalysisPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/coaching" element={<CoachingPage />} />
       </Routes>
 
     </BrowserRouter>
