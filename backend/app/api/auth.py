@@ -1,6 +1,7 @@
 # auth.py API routes
 # Handles register and login
-
+from datetime import datetime
+import os
 from fastapi import APIRouter, HTTPException
 from app.schemas.auth import (
     RegisterOrganization,
@@ -163,4 +164,54 @@ async def login(data: LoginRequest):
         "user_role":    user["role"],
         "org_id":       user["org_id"],
         "org_name":     org["name"] if org else "Unknown"
+    }
+@router.post("/setup-super-admin")
+async def setup_super_admin():
+    """
+    Creates super admin account
+    Run this ONCE to set up!
+    """
+    db = get_db()
+
+    # Get from .env
+    email    = os.getenv("SUPER_ADMIN_EMAIL")
+    password = os.getenv("SUPER_ADMIN_PASSWORD")
+    name     = os.getenv("SUPER_ADMIN_NAME")
+
+    # Check if already exists
+    existing = await db.users.find_one(
+        {"email": email}
+    )
+    if existing:
+        return {"message": "Super admin already exists!"}
+
+    # Create super admin org
+    org = {
+        "name":        "Sales.AI Platform",
+        "admin_email": email,
+        "org_code":    "SUPERADMIN",
+        "plan":        "super",
+        "created_at":  datetime.utcnow(),
+        "is_active":   True,
+        "members":     []
+    }
+    org_result = await db.organizations.insert_one(org)
+    org_id     = str(org_result.inserted_id)
+
+    # Create super admin user
+    user = {
+        "name":       name,
+        "email":      email,
+        "password":   hash_password(password),
+        "org_id":     org_id,
+        "role":       "superadmin",
+        "created_at": datetime.utcnow(),
+        "is_active":  True
+    }
+    await db.users.insert_one(user)
+
+    return {
+        "message": "Super admin created!",
+        "email":   email,
+        "role":    "superadmin"
     }
