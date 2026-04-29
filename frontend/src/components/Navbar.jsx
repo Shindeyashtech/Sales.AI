@@ -3,16 +3,19 @@
 // Lets user navigate between pages
 
 import { useNavigate, useLocation } from 'react-router-dom'
+import useAuthStore from '../store/authStore'
 
-function Navbar() {
+  function Navbar() {
+  const navigate    = useNavigate()
+  const location    = useLocation()
+  const isActive    = (path) => location.pathname === path
+  const user        = useAuthStore(state => state.user)
+  const logout      = useAuthStore(state => state.logout)
 
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  // Check which page we are on
-  // This helps us highlight active page
-  const isActive = (path) => location.pathname === path
-
+  function handleLogout() {
+    logout()
+    navigate('/login')
+  }
   return (
     <nav style={{
       backgroundColor: 'white',
@@ -50,8 +53,8 @@ function Navbar() {
       </div>
 
       {/* Right Side - Navigation Links */}
-      <div style={{ display: 'flex', gap: '8px' }}>
-
+{/* Right Side - Navigation Links */}
+<div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
         {/* Upload Link */}
         <button
           onClick={() => navigate('/')}
@@ -100,6 +103,63 @@ function Navbar() {
         >
           📊 Dashboard
         </button>
+        {/* User Info */}
+{user && (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginLeft: '8px',
+    paddingLeft: '12px',
+    borderLeft: '1px solid #e2e8f0'
+  }}>
+    <div style={{
+      backgroundColor: '#4361ee',
+      color: 'white',
+      borderRadius: '50%',
+      width: '32px',
+      height: '32px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '14px',
+      fontWeight: '600'
+    }}>
+      {user.name.charAt(0).toUpperCase()}
+    </div>
+    <div>
+      <p style={{
+        fontSize: '13px',
+        fontWeight: '600',
+        color: '#1a1a2e'
+      }}>
+        {user.name}
+      </p>
+      <p style={{
+        fontSize: '11px',
+        color: '#666',
+        textTransform: 'capitalize'
+      }}>
+        {user.role}
+      </p>
+    </div>
+    <button
+      onClick={handleLogout}
+      style={{
+        backgroundColor: '#fff0f0',
+        color: '#dc2626',
+        padding: '6px 12px',
+        border: '1px solid #fca5a5',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        marginLeft: '4px'
+      }}
+    >
+      Logout
+    </button>
+  </div>
+)}
 
       </div>
 
