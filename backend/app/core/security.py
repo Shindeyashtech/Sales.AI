@@ -1,7 +1,5 @@
 # security.py
-# Handles password hashing and verification
-
-from passlib.context import CryptContext
+import bcrypt
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from dotenv import load_dotenv
@@ -9,54 +7,42 @@ import os
 
 load_dotenv()
 
-# Password hashing setup
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# JWT settings
 JWT_SECRET    = os.getenv("JWT_SECRET", "supersecretkey")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 JWT_EXPIRE    = int(os.getenv("JWT_EXPIRE_MINUTES", 10080))
 
 def hash_password(password: str) -> str:
-    """
-    Convert plain password to hashed version
-    Example: "mypass123" → "$2b$12$xxxxx..."
-    """
-    return pwd_context.hash(password)
+    """Hash password using bcrypt"""
+    pwd_bytes = password.encode('utf-8')
+    salt      = bcrypt.gensalt()
+    hashed    = bcrypt.hashpw(pwd_bytes, salt)
+    return hashed.decode('utf-8')
 
 def verify_password(plain: str, hashed: str) -> bool:
-    """
-    Check if plain password matches hashed
-    Returns True or False
-    """
-    return pwd_context.verify(plain, hashed)
+    """Verify password against hash"""
+    return bcrypt.checkpw(
+        plain.encode('utf-8'),
+        hashed.encode('utf-8')
+    )
 
 def create_token(data: dict) -> str:
-    """
-    Create JWT token for logged in user
-    Token expires after JWT_EXPIRE minutes
-    """
+    """Create JWT token"""
     to_encode = data.copy()
-
-    # Set expiry time
-    expire = datetime.utcnow() + timedelta(minutes=JWT_EXPIRE)
+    expire    = datetime.utcnow() + timedelta(minutes=JWT_EXPIRE)
     to_encode.update({"exp": expire})
-
-    # Create token
-    token = jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    return token
+    return jwt.encode(
+        to_encode,
+        JWT_SECRET,
+        algorithm=JWT_ALGORITHM
+    )
 
 def decode_token(token: str) -> dict:
-    """
-    Decode JWT token and get user data
-    Returns None if token is invalid
-    """
+    """Decode JWT token"""
     try:
-        payload = jwt.decode(
+        return jwt.decode(
             token,
             JWT_SECRET,
             algorithms=[JWT_ALGORITHM]
         )
-        return payload
     except JWTError:
         return None
