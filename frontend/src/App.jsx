@@ -1,29 +1,56 @@
-// App.jsx
-// Main app with Navbar on every page
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import UploadPage from './pages/UploadPage'
-import AnalysisPage from './pages/AnalysisPage'
+import { useEffect } from 'react'
+import useAuthStore from './store/authStore'
+
+import Navbar        from './components/Navbar'
+import UploadPage    from './pages/UploadPage'
+import AnalysisPage  from './pages/AnalysisPage'
 import DashboardPage from './pages/DashboardPage'
-import CoachingPage from './pages/CoachingPage'
+import CoachingPage  from './pages/CoachingPage'
+import LoginPage     from './pages/LoginPage'
+import RegisterPage  from './pages/RegisterPage'
 import './App.css'
 
 function App() {
+
+  const loadFromStorage = useAuthStore(
+    state => state.loadFromStorage
+  )
+
+  useEffect(() => {
+    loadFromStorage()
+  }, [])
+
   return (
     <BrowserRouter>
-
-      {/* Navbar shows on every page */}
-      <Navbar />
-
-      {/* Pages change based on URL */}
       <Routes>
-        <Route path="/"          element={<UploadPage />} />
-        <Route path="/analysis"  element={<AnalysisPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/coaching" element={<CoachingPage />} />
-      </Routes>
 
+        {/* Public routes */}
+        <Route path="/login"
+          element={<LoginPage />}
+        />
+        <Route path="/register/organization"
+          element={<RegisterPage />}
+        />
+        <Route path="/register/employee"
+          element={<RegisterPage />}
+        />
+
+        {/* Protected routes with Navbar */}
+        <Route path="/" element={
+          <><Navbar /><UploadPage /></>
+        } />
+        <Route path="/analysis" element={
+          <><Navbar /><AnalysisPage /></>
+        } />
+        <Route path="/dashboard" element={
+          <><Navbar /><DashboardPage /></>
+        } />
+        <Route path="/coaching" element={
+          <><Navbar /><CoachingPage /></>
+        } />
+
+      </Routes>
     </BrowserRouter>
   )
 }
