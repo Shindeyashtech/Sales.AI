@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.upload import router as upload_router
 from app.api.auth import router as auth_router
+from app.api.superadmin import router as superadmin_router
 from app.db.mongodb import connect_db, close_db
 from dotenv import load_dotenv
 import os
@@ -18,11 +19,13 @@ app = FastAPI(
     version="2.0.0"
 )
 
+# D76TN48Z
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -49,6 +52,11 @@ app.include_router(
     auth_router,
     prefix="/api/v1/auth",
     tags=["Authentication"]
+)
+app.include_router(
+    superadmin_router,
+    prefix="/api/v1/superadmin",
+    tags=["Super Admin"]
 )
 @app.get("/")
 def home():
