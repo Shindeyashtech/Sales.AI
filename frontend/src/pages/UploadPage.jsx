@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { saveCall } from '../utils/storage'
+import useAuthStore from '../store/authStore'
 function UploadPage() {
 
   const navigate = useNavigate()
+  const token = useAuthStore(state => state.token)
   const [selectedFile, setSelectedFile] = useState(null)
   const [salesName, setSalesName] = useState('')
   const [isDragging, setIsDragging]     = useState(false)
@@ -52,9 +54,12 @@ function UploadPage() {
 formData.append('file', selectedFile)
 formData.append('salesperson_name', salesName)
       const response = await fetch('http://localhost:8000/api/v1/upload', {
-        method: 'POST',
-        body: formData
-      })
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  },
+  body: formData
+})
 
       const data = await response.json()
 

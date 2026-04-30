@@ -54,7 +54,13 @@ function LoginPage() {
       }, data.access_token)
 
       // Go to dashboard
-      navigate('/dashboard')
+    //   navigate('/dashboard')
+      // Redirect based on role
+if (data.user_role === 'superadmin') {
+  navigate('/superadmin')
+} else {
+  navigate('/dashboard')
+}
 
     } catch (err) {
       setError('Cannot connect to server!')
