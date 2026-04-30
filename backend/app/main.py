@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.upload import router as upload_router
 from app.api.auth import router as auth_router
 from app.api.superadmin import router as superadmin_router
+from app.api.admin import router as admin_router
 from app.db.mongodb import connect_db, close_db
 from dotenv import load_dotenv
 import os
@@ -57,6 +58,11 @@ app.include_router(
     superadmin_router,
     prefix="/api/v1/superadmin",
     tags=["Super Admin"]
+)
+app.include_router(
+    admin_router,
+    prefix="/api/v1/admin",
+    tags=["Org Admin"]
 )
 @app.get("/")
 def home():
