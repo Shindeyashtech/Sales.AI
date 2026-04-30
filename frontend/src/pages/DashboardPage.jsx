@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCalls, deleteCall } from '../utils/storage'
+import useAuthStore from '../store/authStore'
 import {
   LineChart, Line, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer,
@@ -17,12 +18,37 @@ function DashboardPage() {
   const [searchQuery, setSearchQuery]   = useState('')
 const [filterSentiment, setFilterSentiment] = useState('All')
 const [sortBy, setSortBy]             = useState('newest')
-
+const token = useAuthStore(state => state.token)
+const user  = useAuthStore(state => state.user)
   // Load calls when page opens
   useEffect(() => {
-    const savedCalls = getCalls()
-    setCalls(savedCalls)
-  }, [])
+  fetchCalls()
+}, [])
+
+async function fetchCalls() {
+  try {
+    // Try MongoDB first
+    const response = await fetch(
+      'http://localhost:8000/api/v1/calls',
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    )
+
+    if (response.ok) {
+      const data = await response.json()
+      setCalls(data.calls || [])
+    } else {
+      // Fallback to localStorage
+      setCalls(getCalls())
+    }
+  } catch (err) {
+    // Fallback to localStorage
+    setCalls(getCalls())
+  }
+}
 
   // Filter + Search + Sort calls
 const filteredCalls = calls
@@ -58,12 +84,30 @@ const filteredCalls = calls
   })
 
   // Delete a call
-  function handleDelete(id) {
-    if (window.confirm('Delete this call?')) {
-      deleteCall(id)
-      setCalls(getCalls())
+  async function handleDelete(callId) {
+  if (!window.confirm('Delete this call?')) return
+
+  try {
+    // Choose endpoint based on role
+    const endpoint = user?.role === 'admin'
+      ? `http://localhost:8000/api/v1/admin/call/${callId}`
+      : `http://localhost:8000/api/v1/calls/${callId}`
+
+    const response = await fetch(endpoint, {
+      method:  'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+
+    if (response.ok) {
+      // Refresh calls list
+      fetchCalls()
+    } else {
+      alert('Delete failed!')
     }
+  } catch (err) {
+    alert('Error deleting call!')
   }
+}
 
   // ── Calculate Statistics ──────────────────────
 
