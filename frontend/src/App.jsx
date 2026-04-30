@@ -7,6 +7,7 @@ import UploadPage    from './pages/UploadPage'
 import AnalysisPage  from './pages/AnalysisPage'
 import DashboardPage from './pages/DashboardPage'
 import CoachingPage  from './pages/CoachingPage'
+import SuperAdminPage from './pages/SuperAdminPage'
 import LoginPage     from './pages/LoginPage'
 import RegisterPage  from './pages/RegisterPage'
 import './App.css'
@@ -49,6 +50,10 @@ function App() {
         <Route path="/coaching" element={
           <><Navbar /><CoachingPage /></>
         } />
+        <Route path="/superadmin" element={
+  <><Navbar /><SuperAdminPage /></>
+} />
+
 
       </Routes>
     </BrowserRouter>
