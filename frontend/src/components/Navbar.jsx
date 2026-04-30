@@ -32,7 +32,12 @@ import useAuthStore from '../store/authStore'
 
       {/* Left Side - Logo */}
       <div
-        onClick={() => navigate('/')}
+        // onClick={() => navigate('/')}
+        onClick={() => 
+    user?.role === 'superadmin' 
+      ? navigate('/superadmin') 
+      : navigate('/')
+  }
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -53,116 +58,139 @@ import useAuthStore from '../store/authStore'
       </div>
 
       {/* Right Side - Navigation Links */}
-{/* Right Side - Navigation Links */}
 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        {/* Upload Link */}
-        <button
-          onClick={() => navigate('/')}
-          style={{
-            backgroundColor: isActive('/') ? '#4361ee' : 'transparent',
-            color: isActive('/') ? 'white' : '#666',
-            padding: '8px 18px',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}
-        >
-          📤 Upload
-        </button>
-          {/* Coaching Link */}
-<button
-  onClick={() => navigate('/coaching')}
-  style={{
-    backgroundColor: isActive('/coaching') ? '#4361ee' : 'transparent',
-    color: isActive('/coaching') ? 'white' : '#666',
-    padding: '8px 18px',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '500'
-  }}
->
-  🎯 Coaching
-</button>
-        {/* Dashboard Link */}
-        <button
-          onClick={() => navigate('/dashboard')}
-          style={{
-            backgroundColor: isActive('/dashboard') ? '#4361ee' : 'transparent',
-            color: isActive('/dashboard') ? 'white' : '#666',
-            padding: '8px 18px',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}
-        >
-          📊 Dashboard
-        </button>
-        {/* User Info */}
-{user && (
-  <div style={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    marginLeft: '8px',
-    paddingLeft: '12px',
-    borderLeft: '1px solid #e2e8f0'
-  }}>
-    <div style={{
-      backgroundColor: '#4361ee',
-      color: 'white',
-      borderRadius: '50%',
-      width: '32px',
-      height: '32px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '14px',
-      fontWeight: '600'
-    }}>
-      {user.name.charAt(0).toUpperCase()}
-    </div>
-    <div>
-      <p style={{
-        fontSize: '13px',
-        fontWeight: '600',
-        color: '#1a1a2e'
-      }}>
-        {user.name}
-      </p>
-      <p style={{
-        fontSize: '11px',
-        color: '#666',
-        textTransform: 'capitalize'
-      }}>
-        {user.role}
-      </p>
-    </div>
+
+  {/* Show these ONLY for normal users */}
+  {user?.role !== 'superadmin' && (
+    <>
+      <button
+        onClick={() => navigate('/')}
+        style={{
+          backgroundColor: isActive('/') ? '#4361ee' : 'transparent',
+          color: isActive('/') ? 'white' : '#666',
+          padding: '8px 18px',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}
+      >
+        📤 Upload
+      </button>
+
+      <button
+        onClick={() => navigate('/coaching')}
+        style={{
+          backgroundColor: isActive('/coaching') ? '#4361ee' : 'transparent',
+          color: isActive('/coaching') ? 'white' : '#666',
+          padding: '8px 18px',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}
+      >
+        🎯 Coaching
+      </button>
+
+      <button
+        onClick={() => navigate('/dashboard')}
+        style={{
+          backgroundColor: isActive('/dashboard') ? '#4361ee' : 'transparent',
+          color: isActive('/dashboard') ? 'white' : '#666',
+          padding: '8px 18px',
+          border: 'none',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: '500'
+        }}
+      >
+        📊 Dashboard
+      </button>
+    </>
+  )}
+
+  {/* Show this ONLY for super admin */}
+  {user?.role === 'superadmin' && (
     <button
-      onClick={handleLogout}
+      onClick={() => navigate('/superadmin')}
       style={{
-        backgroundColor: '#fff0f0',
-        color: '#dc2626',
-        padding: '6px 12px',
-        border: '1px solid #fca5a5',
+        backgroundColor: '#7209b7',
+        color: 'white',
+        padding: '8px 18px',
+        border: 'none',
         borderRadius: '8px',
         cursor: 'pointer',
-        fontSize: '12px',
-        marginLeft: '4px'
+        fontSize: '14px',
+        fontWeight: '500'
       }}
     >
-      Logout
+      ⚡ Admin Dashboard
     </button>
-  </div>
-)}
+  )}
 
+  {/* User info and logout - show for everyone */}
+  {user && (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      marginLeft: '8px',
+      paddingLeft: '12px',
+      borderLeft: '1px solid #e2e8f0'
+    }}>
+      <div style={{
+        backgroundColor: user.role === 'superadmin' ? '#7209b7' : '#4361ee',
+        color: 'white',
+        borderRadius: '50%',
+        width: '32px',
+        height: '32px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '14px',
+        fontWeight: '600'
+      }}>
+        {user.name.charAt(0).toUpperCase()}
       </div>
+      <div>
+        <p style={{
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#1a1a2e'
+        }}>
+          {user.name}
+        </p>
+        <p style={{
+          fontSize: '11px',
+          color: '#666',
+          textTransform: 'capitalize'
+        }}>
+          {user.role}
+        </p>
+      </div>
+      <button
+        onClick={handleLogout}
+        style={{
+          backgroundColor: '#fff0f0',
+          color: '#dc2626',
+          padding: '6px 12px',
+          border: '1px solid #fca5a5',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontSize: '12px',
+          marginLeft: '4px'
+        }}
+      >
+        Logout
+      </button>
+    </div>
+  )}
 
+</div>
     </nav>
   )
 }
