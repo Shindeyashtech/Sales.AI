@@ -58,10 +58,11 @@ function LoginPage() {
       // Redirect based on role
 if (data.user_role === 'superadmin') {
   navigate('/superadmin')
-} else {
+} else if (data.user_role === 'admin') {
   navigate('/dashboard')
+} else {
+  navigate('/')
 }
-
     } catch (err) {
       setError('Cannot connect to server!')
     } finally {
