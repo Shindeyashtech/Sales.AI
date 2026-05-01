@@ -8,6 +8,7 @@ import AnalysisPage  from './pages/AnalysisPage'
 import DashboardPage from './pages/DashboardPage'
 import CoachingPage  from './pages/CoachingPage'
 import SuperAdminPage from './pages/SuperAdminPage'
+import TeamPage from './pages/TeamPage'
 import LoginPage     from './pages/LoginPage'
 import RegisterPage  from './pages/RegisterPage'
 import './App.css'
@@ -52,6 +53,9 @@ function App() {
         } />
         <Route path="/superadmin" element={
   <><Navbar /><SuperAdminPage /></>
+} />
+<Route path="/team" element={
+  <><Navbar /><TeamPage /></>
 } />
 
 
