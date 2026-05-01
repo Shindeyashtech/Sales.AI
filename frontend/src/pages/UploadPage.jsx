@@ -1,4 +1,5 @@
-import { useState } from 'react'
+// import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { saveCall } from '../utils/storage'
 import useAuthStore from '../store/authStore'
@@ -6,6 +7,14 @@ function UploadPage() {
 
   const navigate = useNavigate()
   const token = useAuthStore(state => state.token)
+  const user  = useAuthStore(state => state.user)
+
+// Redirect admin away from upload page
+useEffect(() => {
+  if (user?.role === 'admin') {
+    navigate('/dashboard')
+  }
+}, [user])
   const [selectedFile, setSelectedFile] = useState(null)
   const [salesName, setSalesName] = useState('')
   const [isDragging, setIsDragging]     = useState(false)
