@@ -19,8 +19,12 @@ async def verify_superadmin(authorization: str = Header(None)):
 async def get_platform_stats(authorization: str = Header(None)):
     await verify_superadmin(authorization)
     db = get_db()
-    total_orgs  = await db.organizations.count_documents({})
-    total_users = await db.users.count_documents({})
+    total_orgs  = await db.organizations.count_documents(
+    {"plan": {"$ne": "super"}}
+)
+    total_users = await db.users.count_documents(
+    {"role": {"$ne": "superadmin"}}
+)
     total_calls = await db.calls.count_documents({})
     return {
         "total_organizations": total_orgs,
@@ -33,7 +37,9 @@ async def get_all_organizations(authorization: str = Header(None)):
     await verify_superadmin(authorization)
     db   = get_db()
     orgs = []
-    async for org in db.organizations.find({}):
+    async for org in db.organizations.find(
+    {"plan": {"$ne": "super"}}
+):
         member_count = await db.users.count_documents(
             {"org_id": str(org["_id"])}
         )
