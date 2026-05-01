@@ -61,12 +61,15 @@ import useAuthStore from '../store/authStore'
 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
 
   {/* Show these ONLY for normal users */}
-  {user?.role !== 'superadmin' && (
-    <>
+{user?.role !== 'superadmin' && (
+  <>
+    {/* Upload - Employee only */}
+    {user?.role === 'employee' && (
       <button
         onClick={() => navigate('/')}
         style={{
-          backgroundColor: isActive('/') ? '#4361ee' : 'transparent',
+          backgroundColor: isActive('/') 
+            ? '#4361ee' : 'transparent',
           color: isActive('/') ? 'white' : '#666',
           padding: '8px 18px',
           border: 'none',
@@ -78,11 +81,33 @@ import useAuthStore from '../store/authStore'
       >
         📤 Upload
       </button>
+    )}
 
+    {/* Dashboard - Everyone except superadmin */}
+    <button
+      onClick={() => navigate('/dashboard')}
+      style={{
+        backgroundColor: isActive('/dashboard')
+          ? '#4361ee' : 'transparent',
+        color: isActive('/dashboard') ? 'white' : '#666',
+        padding: '8px 18px',
+        border: 'none',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        fontSize: '14px',
+        fontWeight: '500'
+      }}
+    >
+      📊 Dashboard
+    </button>
+
+    {/* Coaching - Employee only */}
+    {user?.role === 'employee' && (
       <button
         onClick={() => navigate('/coaching')}
         style={{
-          backgroundColor: isActive('/coaching') ? '#4361ee' : 'transparent',
+          backgroundColor: isActive('/coaching')
+            ? '#4361ee' : 'transparent',
           color: isActive('/coaching') ? 'white' : '#666',
           padding: '8px 18px',
           border: 'none',
@@ -94,12 +119,16 @@ import useAuthStore from '../store/authStore'
       >
         🎯 Coaching
       </button>
+    )}
 
+    {/* Team - Admin only */}
+    {user?.role === 'admin' && (
       <button
-        onClick={() => navigate('/dashboard')}
+        onClick={() => navigate('/team')}
         style={{
-          backgroundColor: isActive('/dashboard') ? '#4361ee' : 'transparent',
-          color: isActive('/dashboard') ? 'white' : '#666',
+          backgroundColor: isActive('/team')
+            ? '#4361ee' : 'transparent',
+          color: isActive('/team') ? 'white' : '#666',
           padding: '8px 18px',
           border: 'none',
           borderRadius: '8px',
@@ -108,10 +137,11 @@ import useAuthStore from '../store/authStore'
           fontWeight: '500'
         }}
       >
-        📊 Dashboard
+        👥 Team
       </button>
-    </>
-  )}
+    )}
+  </>
+)}
 
   {/* Show this ONLY for super admin */}
   {user?.role === 'superadmin' && (
