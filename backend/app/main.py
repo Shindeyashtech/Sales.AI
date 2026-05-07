@@ -1,6 +1,4 @@
 # main.py
-# FastAPI Backend with MongoDB
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.upload import router as upload_router
@@ -11,7 +9,6 @@ from app.db.mongodb import connect_db, close_db
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
 load_dotenv()
 
 app = FastAPI(
@@ -20,9 +17,6 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# D76TN48Z
-
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -31,19 +25,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Connect to MongoDB when app starts
 @app.on_event("startup")
 async def startup():
     await connect_db()
-    print("App started!")
+    print("Sales.AI Backend Started!")
 
-# Close MongoDB when app stops
 @app.on_event("shutdown")
 async def shutdown():
     await close_db()
-    print("App stopped!")
 
-# Routes
 app.include_router(
     upload_router,
     prefix="/api/v1",
@@ -64,6 +54,7 @@ app.include_router(
     prefix="/api/v1/admin",
     tags=["Org Admin"]
 )
+
 @app.get("/")
 def home():
     return {
@@ -74,8 +65,4 @@ def home():
 
 @app.get("/health")
 def health():
-    return {
-        "status":   "healthy",
-        "database": "MongoDB Atlas",
-        "ai":       "TinyLlama"
-    }
+    return {"status": "healthy"}
