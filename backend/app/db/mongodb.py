@@ -2,6 +2,7 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 import os
+import certifi
 
 load_dotenv()
 
@@ -17,21 +18,23 @@ async def connect_db():
     print("Connecting to MongoDB Atlas...")
     print(f"URL: {MONGODB_URL[:50]}...")
 
-    client = AsyncIOMotorClient(MONGODB_URL)
-    db     = client[DATABASE_NAME]
+    # Use certifi for SSL certificates
+    client = AsyncIOMotorClient(
+        MONGODB_URL,
+        tlsCAFile=certifi.where(),
+        serverSelectionTimeoutMS=30000
+    )
+
+    db = client[DATABASE_NAME]
 
     # Test connection
     await client.admin.command('ping')
     print("Connected to MongoDB Atlas! ✅")
 
-    # Create indexes
-    await db.users.create_index(
-        "email", unique=True
-    )
+    await db.users.create_index("email", unique=True)
     await db.organizations.create_index(
         "org_code", unique=True
     )
-    print("Database indexes created! ✅")
 
     return db
 
@@ -39,7 +42,6 @@ async def close_db():
     global client
     if client:
         client.close()
-        print("MongoDB connection closed!")
 
 def get_db():
     return db
