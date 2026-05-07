@@ -27,6 +27,17 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
+    try:
+        print("Starting app...")
+        
+        # DB connect
+        await connect_db()
+
+        print("DB connected")
+
+    except Exception as e:
+        print("STARTUP ERROR:", e)
+        raise e
     await connect_db()
     print("Sales.AI Backend Started!")
 
