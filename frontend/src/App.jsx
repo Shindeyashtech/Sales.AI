@@ -10,6 +10,7 @@ import CoachingPage  from './pages/CoachingPage'
 import SuperAdminPage from './pages/SuperAdminPage'
 import TeamPage from './pages/TeamPage'
 import LoginPage     from './pages/LoginPage'
+import LandingPage   from './pages/LandingPage'
 import RegisterPage  from './pages/RegisterPage'
 import './App.css'
 
@@ -27,10 +28,14 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public routes */}
-        <Route path="/login"
-          element={<LoginPage />}
-        />
+        
+       {/* Public routes */}
+<Route path="/"
+  element={<LandingPage />}
+/>
+<Route path="/login"
+  element={<LoginPage />}
+/>
         <Route path="/register/organization"
           element={<RegisterPage />}
         />
@@ -39,9 +44,9 @@ function App() {
         />
 
         {/* Protected routes with Navbar */}
-        <Route path="/" element={
-          <><Navbar /><UploadPage /></>
-        } />
+       <Route path="/upload" element={
+  <><Navbar /><UploadPage /></>
+} />
         <Route path="/analysis" element={
           <><Navbar /><AnalysisPage /></>
         } />
@@ -56,6 +61,10 @@ function App() {
 } />
 <Route path="/team" element={
   <><Navbar /><TeamPage /></>
+} />
+
+<Route path="/upload" element={
+  <><Navbar /><UploadPage /></>
 } />
 
 
