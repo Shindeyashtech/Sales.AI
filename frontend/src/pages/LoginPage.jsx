@@ -61,7 +61,7 @@ if (data.user_role === 'superadmin') {
 } else if (data.user_role === 'admin') {
   navigate('/dashboard')
 } else {
-  navigate('/')
+  navigate('/upload')
 }
     } catch (err) {
       setError('Cannot connect to server!')
