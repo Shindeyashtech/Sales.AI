@@ -45,8 +45,8 @@ function RegisterPage() {
 
       // Choose endpoint based on type
       const endpoint = isOrg
-        ? 'http://localhost:8000/api/v1/auth/register/organization'
-        : 'http://localhost:8000/api/v1/auth/register/employee'
+        ? 'http://import.meta.env.VITE_API_URL/api/v1/auth/register/organization'
+        : 'http://import.meta.env.VITE_API_URL/api/v1/auth/register/employee'
 
       // Build request body
       const body = isOrg

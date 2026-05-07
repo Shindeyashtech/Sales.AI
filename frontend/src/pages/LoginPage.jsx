@@ -29,7 +29,7 @@ function LoginPage() {
 
       // Send login request to backend
       const response = await fetch(
-        'http://localhost:8000/api/v1/auth/login',
+        'http://import.meta.env.VITE_API_URL/api/v1/auth/login',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

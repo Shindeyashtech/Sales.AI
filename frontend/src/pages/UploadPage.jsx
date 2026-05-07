@@ -62,7 +62,7 @@ useEffect(() => {
       const formData = new FormData()
 formData.append('file', selectedFile)
 formData.append('salesperson_name', salesName)
-      const response = await fetch('http://localhost:8000/api/v1/upload', {
+      const response = await fetch('http://import.meta.env.VITE_API_URL/api/v1/upload', {
   method: 'POST',
   headers: {
     'Authorization': `Bearer ${token}`
