@@ -36,7 +36,7 @@ import useAuthStore from '../store/authStore'
         onClick={() => 
     user?.role === 'superadmin' 
       ? navigate('/superadmin') 
-      : navigate('/')
+      : navigate('//upload')
   }
         style={{
           display: 'flex',
@@ -68,7 +68,7 @@ import useAuthStore from '../store/authStore'
       <button
         onClick={() => navigate('/')}
         style={{
-          backgroundColor: isActive('/') 
+          backgroundColor: isActive('/upload') 
             ? '#4361ee' : 'transparent',
           color: isActive('/') ? 'white' : '#666',
           padding: '8px 18px',
