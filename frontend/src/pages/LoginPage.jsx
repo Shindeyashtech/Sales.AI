@@ -4,7 +4,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/authStore'
-
+import API_URL from '../api/config'
+// Replace all http://localhost:8000 with API_URL
 function LoginPage() {
 
   const navigate    = useNavigate()
@@ -29,7 +30,7 @@ function LoginPage() {
 
       // Send login request to backend
       const response = await fetch(
-        'http://import.meta.env.VITE_API_URL/api/v1/auth/login',
+         `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/login`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
