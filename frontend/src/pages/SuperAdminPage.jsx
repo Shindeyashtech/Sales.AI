@@ -37,9 +37,13 @@ function SuperAdminPage() {
       const headers = { 'Authorization': `Bearer ${token}` }
 
       const [statsRes, orgsRes, usersRes] = await Promise.all([
-        fetch('http://import.meta.env.VITE_API_URL/api/v1/superadmin/stats',         { headers }),
-        fetch('http://import.meta.env.VITE_API_URL/api/v1/superadmin/organizations', { headers }),
-        fetch('http://import.meta.env.VITE_API_URL/api/v1/superadmin/users',         { headers })
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/superadmin/stats`
+,         { headers }),
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/superadmin/organizations`
+, { headers }),
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/superadmin/users`
+,         { headers })
+
       ])
 
       const statsData = await statsRes.json()
@@ -63,7 +67,7 @@ function SuperAdminPage() {
 
   try {
     const response = await fetch(
-      `http://import.meta.env.VITE_API_URL/api/v1/superadmin/organization/${orgId}`,
+      `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/superadmin/organization/${orgId}`,
       {
         method:  'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -86,7 +90,7 @@ async function deleteUser(userId, userName) {
 
   try {
     const response = await fetch(
-      `http://import.meta.env.VITE_API_URL/api/v1/superadmin/user/${userId}`,
+      `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/superadmin/user/${userId}`,
       {
         method:  'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
