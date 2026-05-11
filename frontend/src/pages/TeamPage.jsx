@@ -28,7 +28,7 @@ function TeamPage() {
     try {
       setLoading(true)
       const response = await fetch(
-        'http://import.meta.env.VITE_API_URL/api/v1/admin/team',
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/admin/team`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -54,7 +54,7 @@ function TeamPage() {
 
     try {
       const response = await fetch(
-        `http://import.meta.env.VITE_API_URL/api/v1/admin/employee/${userId}`,
+        `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/admin/employee/${userId}`,
         {
           method:  'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
