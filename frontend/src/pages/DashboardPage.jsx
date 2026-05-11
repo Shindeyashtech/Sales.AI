@@ -29,7 +29,7 @@ async function fetchCalls() {
   try {
     // Try MongoDB first
     const response = await fetch(
-      'http://import.meta.env.VITE_API_URL/api/v1/calls',
+      `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/calls`,
       {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -90,8 +90,8 @@ const filteredCalls = calls
   try {
     // Choose endpoint based on role
     const endpoint = user?.role === 'admin'
-      ? `http://import.meta.env.VITE_API_URL/api/v1/admin/call/${callId}`
-      : `http://import.meta.env.VITE_API_URL/api/v1/calls/${callId}`
+      ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/admin/call/${callId}`
+      : `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/calls/${callId}`
 
     const response = await fetch(endpoint, {
       method:  'DELETE',
