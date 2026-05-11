@@ -1,21 +1,45 @@
 // CoachingPage.jsx
 // Shows coaching plan for all salespersons
 
+// import { useState, useEffect } from 'react'
+// import { useNavigate } from 'react-router-dom'
+// import { getCalls } from '../utils/storage'
+
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCalls } from '../utils/storage'
-
+import useAuthStore from '../store/authStore'
 function CoachingPage() {
+const navigate = useNavigate()
+const token    = useAuthStore(state => state.token)
+const [calls, setCalls]               = useState([])
+const [selectedPerson, setSelectedPerson] = useState('All')
+const [loading, setLoading]           = useState(true)
 
-  const navigate = useNavigate()
-  const [calls, setCalls]               = useState([])
-  const [selectedPerson, setSelectedPerson] = useState('All')
+useEffect(() => {
+  fetchCalls()
+}, [])
 
-  // Load calls on page open
-  useEffect(() => {
-    const savedCalls = getCalls()
-    setCalls(savedCalls)
-  }, [])
+async function fetchCalls() {
+  try {
+    setLoading(true)
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/calls`,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    )
+    if (response.ok) {
+      const data = await response.json()
+      setCalls(data.calls || [])
+    }
+  } catch (err) {
+    console.error('Failed to fetch calls:', err)
+  } finally {
+    setLoading(false)
+  }
+}
 
   // Get unique salesperson names
   const salespeople = [
@@ -514,7 +538,9 @@ function CoachingPage() {
                       color: '#666',
                       fontSize: '13px'
                     }}>
-                      {call.date} • {call.language}
+                     {call.uploaded_at 
+  ? new Date(call.uploaded_at).toLocaleDateString() 
+  : call.date} • {call.language}
                     </p>
                   </div>
 
