@@ -5,7 +5,7 @@ app = FastAPI(title="Sales.AI")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://salesai-rosy.vercel.app/"],
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -14,6 +14,19 @@ app.add_middleware(
 from app.api.auth import router as auth_router
 
 app.include_router(auth_router, prefix="/api/v1/auth")
+from fastapi.responses import JSONResponse
+from fastapi import Request
+
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(request: Request, rest_of_path: str):
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        }
+    )
 
 @app.get("/")
 def home():
