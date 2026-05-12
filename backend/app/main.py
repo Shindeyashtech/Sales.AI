@@ -38,8 +38,11 @@ async def startup():
     except Exception as e:
         print("STARTUP ERROR:", e)
         raise e
-    await connect_db()
+    # await connect_db()
+    # print("Sales.AI Backend Started!")
     print("Sales.AI Backend Started!")
+    print("MongoDB will connect on first request!")
+
 
 @app.on_event("shutdown")
 async def shutdown():

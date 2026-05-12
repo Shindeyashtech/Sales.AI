@@ -12,27 +12,17 @@ db     = None
 
 async def connect_db():
     global client, db
-
     print("Connecting to MongoDB Atlas...")
-    print(f"URL: {MONGODB_URL[:50]}...")
 
     client = AsyncIOMotorClient(
         MONGODB_URL,
-        serverSelectionTimeoutMS=30000,
-        connectTimeoutMS=30000,
-        socketTimeoutMS=30000,
+        serverSelectionTimeoutMS=5000,
         tls=True,
-        tlsAllowInvalidCertificates=True
+        tlsAllowInvalidCertificates=True,
+        retryWrites=True
     )
-
     db = client[DATABASE_NAME]
-    await client.admin.command('ping')
-    print("Connected to MongoDB Atlas! ✅")
-
-    await db.users.create_index("email", unique=True)
-    await db.organizations.create_index(
-        "org_code", unique=True
-    )
+    print("MongoDB client created! ✅")
     return db
 
 async def close_db():
@@ -41,4 +31,14 @@ async def close_db():
         client.close()
 
 def get_db():
+    global client, db
+    if db is None:
+        client = AsyncIOMotorClient(
+            MONGODB_URL,
+            serverSelectionTimeoutMS=5000,
+            tls=True,
+            tlsAllowInvalidCertificates=True,
+            retryWrites=True
+        )
+        db = client[DATABASE_NAME]
     return db
