@@ -1,8 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 import os
-import ssl
-import certifi
 
 load_dotenv()
 
@@ -16,20 +14,15 @@ async def connect_db():
     global client, db
 
     print("Connecting to MongoDB Atlas...")
-
-    # Create SSL context manually
-    ssl_context = ssl.create_default_context(
-        cafile=certifi.where()
-    )
-    ssl_context.check_hostname = True
-    ssl_context.verify_mode    = ssl.CERT_REQUIRED
+    print(f"URL: {MONGODB_URL[:50]}...")
 
     client = AsyncIOMotorClient(
         MONGODB_URL,
-        ssl=True,
-        ssl_context=ssl_context,
         serverSelectionTimeoutMS=30000,
-        connectTimeoutMS=30000
+        connectTimeoutMS=30000,
+        socketTimeoutMS=30000,
+        tls=True,
+        tlsAllowInvalidCertificates=True
     )
 
     db = client[DATABASE_NAME]
