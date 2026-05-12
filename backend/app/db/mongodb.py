@@ -7,38 +7,26 @@ load_dotenv()
 MONGODB_URL   = os.getenv("MONGODB_URL")
 DATABASE_NAME = os.getenv("DATABASE_NAME", "salesai")
 
-client = None
-db     = None
-
-async def connect_db():
-    global client, db
-    print("Connecting to MongoDB Atlas...")
-
-    client = AsyncIOMotorClient(
-        MONGODB_URL,
-        serverSelectionTimeoutMS=5000,
-        tls=True,
-        tlsAllowInvalidCertificates=True,
-        retryWrites=True
-    )
-    db = client[DATABASE_NAME]
-    print("MongoDB client created! ✅")
-    return db
-
-async def close_db():
-    global client
-    if client:
-        client.close()
+_client = None
+_db     = None
 
 def get_db():
-    global client, db
-    if db is None:
-        client = AsyncIOMotorClient(
+    global _client, _db
+    if _db is None:
+        _client = AsyncIOMotorClient(
             MONGODB_URL,
-            serverSelectionTimeoutMS=5000,
             tls=True,
             tlsAllowInvalidCertificates=True,
-            retryWrites=True
+            serverSelectionTimeoutMS=30000
         )
-        db = client[DATABASE_NAME]
-    return db
+        _db = _client[DATABASE_NAME]
+    return _db
+
+async def connect_db():
+    get_db()
+    print("MongoDB client ready!")
+
+async def close_db():
+    global _client
+    if _client:
+        _client.close()
