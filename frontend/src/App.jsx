@@ -61,7 +61,8 @@ function App() {
         />
 
         {/* Super Admin routes */}
-        <Route path="/superadmin" element={
+        <Route path="/superadmin" element=
+        {
           <ProtectedRoute allowedRoles={['superadmin']}>
             <Navbar />
             <SuperAdminPage />
