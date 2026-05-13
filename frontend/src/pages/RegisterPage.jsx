@@ -45,9 +45,11 @@ function RegisterPage() {
       setError(null)
 
       // Choose endpoint based on type
-      const endpoint = isOrg
-        ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/register/employee`
-        : `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/register/organization`
+      const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+const endpoint = isOrg
+  ? `${BASE}/api/v1/auth/register/organization`
+  : `${BASE}/api/v1/auth/register/employee`
 
       // Build request body
       const body = isOrg
@@ -252,6 +254,7 @@ if (!response.ok) {
               placeholder="Enter org code (e.g. SALES123)..."
               value={orgCode}
               onChange={(e) => setOrgCode(e.target.value)}
+              
               style={{
                 width: '100%',
                 padding: '12px 16px',
