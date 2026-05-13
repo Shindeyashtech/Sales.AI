@@ -48,7 +48,6 @@ function ProtectedRoute({ children, allowedRoles }) {
     if (user?.role === 'admin')      return <Navigate to="/dashboard" />
     return <Navigate to="/upload" />
   }
-
   return children
 }
 
