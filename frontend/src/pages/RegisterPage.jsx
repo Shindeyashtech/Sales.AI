@@ -10,8 +10,9 @@ function RegisterPage() {
   const navigate = useNavigate()
 
   // Check URL to know which type
-  const isOrg = window.location.pathname
-    .includes('organization')
+  const [isOrg] = useState(
+  window.location.pathname.includes('organization')
+)
   const [name,      setName]      = useState('')
   const [email,     setEmail]     = useState('')
   const [password,  setPassword]  = useState('')
