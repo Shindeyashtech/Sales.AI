@@ -33,11 +33,17 @@ import useAuthStore from '../store/authStore'
       {/* Left Side - Logo */}
       <div
         // onClick={() => navigate('/')}
-        onClick={() => 
-    user?.role === 'superadmin' 
-      ? navigate('/superadmin') 
-      : navigate('//upload')
+        onClick={() => {
+  if (user?.role === 'superadmin') {
+    navigate('/superadmin')
+  } else if (user?.role === 'admin') {
+    navigate('/dashboard')
+  } else if (user?.role === 'employee') {
+    navigate('/upload')
+  } else {
+    navigate('/')
   }
+}}
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -65,12 +71,12 @@ import useAuthStore from '../store/authStore'
   <>
     {/* Upload - Employee only */}
     {user?.role === 'employee' && (
-      <button
-        onClick={() => navigate('/')}
+  <button
+    onClick={() => navigate('/upload')}
         style={{
           backgroundColor: isActive('/upload') 
             ? '#4361ee' : 'transparent',
-          color: isActive('/') ? 'white' : '#666',
+          color: isActive('/upload') ? 'white' : '#666',
           padding: '8px 18px',
           border: 'none',
           borderRadius: '8px',
