@@ -63,9 +63,9 @@ function App() {
   <><Navbar /><TeamPage /></>
 } />
 
-<Route path="/upload" element={
+{/* <Route path="/upload" element={
   <><Navbar /><UploadPage /></>
-} />
+} /> */}
 
 
       </Routes>
