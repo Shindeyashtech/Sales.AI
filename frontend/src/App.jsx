@@ -16,12 +16,41 @@ import './App.css'
 
 // Protected route wrapper
 function ProtectedRoute({ children, allowedRoles }) {
-  const user = useAuthStore(state => state.user)
+  const user      = useAuthStore(state => state.user)
   const isLoggedIn = useAuthStore(state => state.isLoggedIn)
+  const isLoading  = useAuthStore(state => state.isLoading)
+
+  // Wait for auth to load from localStorage!
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        backgroundColor: '#f0f2f5'
+      }}>
+        <div className="spinner"></div>
+        <p style={{ color: '#666', marginTop: '16px' }}>
+          Loading...
+        </p>
+      </div>
+    )
+  }
 
   if (!isLoggedIn) {
     return <Navigate to="/login" />
   }
+
+  if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    if (user?.role === 'superadmin') return <Navigate to="/superadmin" />
+    if (user?.role === 'admin')      return <Navigate to="/dashboard" />
+    return <Navigate to="/upload" />
+  }
+
+  return children
+}
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
     // Redirect to correct home based on role

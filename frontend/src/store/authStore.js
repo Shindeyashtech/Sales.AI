@@ -1,47 +1,34 @@
-// authStore.js
-// Global login state
-// All pages can read this!
-
 import { create } from 'zustand'
 
 const useAuthStore = create((set) => ({
+  user:        null,
+  token:       null,
+  isLoggedIn:  false,
+  isLoading:   true,  // ← NEW!
 
-  // Initial state
-  user:     null,
-  token:    null,
-  isLoggedIn: false,
-
-  // Login action
-  // Saves user data and token
   login: (userData, token) => {
-    // Save to localStorage so
-    // data persists after refresh
-    localStorage.setItem('token',    token)
-    localStorage.setItem('user',     JSON.stringify(userData))
-
+    localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(userData))
     set({
       user:       userData,
       token:      token,
-      isLoggedIn: true
+      isLoggedIn: true,
+      isLoading:  false
     })
   },
 
-  // Logout action
   logout: () => {
-    // Clear localStorage
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     localStorage.removeItem('calls')
-
     set({
       user:       null,
       token:      null,
-      isLoggedIn: false
+      isLoggedIn: false,
+      isLoading:  false
     })
   },
 
-  // Load from localStorage
-  // Called when app starts
   loadFromStorage: () => {
     const token = localStorage.getItem('token')
     const user  = localStorage.getItem('user')
@@ -50,11 +37,13 @@ const useAuthStore = create((set) => ({
       set({
         token:      token,
         user:       JSON.parse(user),
-        isLoggedIn: true
+        isLoggedIn: true,
+        isLoading:  false
       })
+    } else {
+      set({ isLoading: false })
     }
   }
-
 }))
 
 export default useAuthStore
