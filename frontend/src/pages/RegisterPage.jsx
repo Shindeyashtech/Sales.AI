@@ -54,17 +54,22 @@ function RegisterPage() {
         : { org_code: orgCode.toUpperCase(), name, email, password }
 
       const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      })
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(body)
+})
 
-      const data = await response.json()
+const data = await response.json()
 
-      if (!response.ok) {
-        setError(data.detail || 'Registration failed!')
-        return
-      }
+if (!response.ok) {
+  // Handle validation errors properly
+  if (Array.isArray(data.detail)) {
+    setError(data.detail[0].msg || 'Validation failed!')
+  } else {
+    setError(data.detail || 'Registration failed!')
+  }
+  return
+}
 
       // Show success message
       setSuccess(data)
