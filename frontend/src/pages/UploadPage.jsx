@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { saveCall } from '../utils/storage'
 import useAuthStore from '../store/authStore'
+import { gradients, card, button, colors } from '../styles/theme'
 function UploadPage() {
 
   const navigate = useNavigate()
@@ -91,14 +92,14 @@ navigate('/analysis', { state: { result: data, callId: savedCall.id } })
 
   return (
   <div style={{
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
-    background: 'linear-gradient(135deg, #f8f7ff 0%, #fdf4ff 50%, #f0f9ff 100%)'
-  }}>
+  minHeight: '100vh',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '20px',
+  background: gradients.bg
+}}>
 
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
@@ -118,13 +119,10 @@ navigate('/analysis', { state: { result: data, callId: savedCall.id } })
 
       {/* Upload Card */}
       <div className="card" style={{
-  backgroundColor: 'white',
-  borderRadius: '24px',
+  ...card,
   padding: '40px',
   width: '100%',
-  maxWidth: '500px',
-  boxShadow: '0 8px 32px rgba(124,58,237,0.12)',
-  border: '1px solid rgba(124,58,237,0.08)'
+  maxWidth: '500px'
 }}>
 
         <h2 style={{ marginBottom: '20px', color: '#1a1a2e' }}>
