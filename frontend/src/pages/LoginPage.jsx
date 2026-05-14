@@ -74,8 +74,7 @@ if (data.user_role === 'superadmin') {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#f0f2f5',
-      display: 'flex',
+background: 'linear-gradient(135deg, #f8f7ff 0%, #fdf4ff 50%, #f0f9ff 100%)',      display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '20px'
@@ -87,7 +86,9 @@ if (data.user_role === 'superadmin') {
         padding: '40px',
         width: '100%',
         maxWidth: '420px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+        boxShadow: '0 8px 32px rgba(124,58,237,0.12)',
+border: '1px solid rgba(124,58,237,0.08)',
+borderRadius: '24px'
       }}>
 
         {/* Logo */}
@@ -189,7 +190,10 @@ if (data.user_role === 'superadmin') {
           style={{
             width: '100%',
             padding: '14px',
-            backgroundColor: loading ? '#94a3b8' : '#4361ee',
+            background: loading
+  ? '#94a3b8'
+  : 'linear-gradient(135deg, #7c3aed, #ec4899)',
+border: 'none',
             color: 'white',
             border: 'none',
             borderRadius: '10px',
