@@ -10,7 +10,7 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts'
-
+import { gradients, card, button, colors, shadows } from '../styles/theme'
 function DashboardPage() {
 
   const navigate    = useNavigate()
@@ -156,10 +156,10 @@ const filteredCalls = calls
 
   return (
     <div style={{
-      minHeight: '100vh',
-background: 'linear-gradient(135deg, #f8f7ff, #fdf4ff)',
-      padding: '30px 20px'
-    }}>
+  minHeight: '100vh',
+  background: gradients.bg,
+  padding: '30px 20px'
+}}>
 
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>
 
@@ -170,21 +170,22 @@ background: 'linear-gradient(135deg, #f8f7ff, #fdf4ff)',
           alignItems: 'center',
           marginBottom: '30px'
         }}>
-          <h1 style={{ color: '#1a1a2e', fontSize: '24px' }}>
-            📊 Dashboard
-          </h1>
+          <h1 style={{
+  fontSize: '26px',
+  fontWeight: '800',
+  background: gradients.primary,
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent'
+}}>
+  📊 Dashboard
+</h1>
           <button
             onClick={() => navigate('/')}
-            style={{
-background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
-border: 'none',
-              color: 'white',
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontWeight: '600'
-            }}
+          style={{
+  ...button.primary,
+  padding: '10px 20px',
+  boxShadow: shadows.button
+}}
           >
             + New Upload
           </button>
@@ -200,12 +201,9 @@ border: 'none',
 
           {/* Total Calls */}
           <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-            textAlign: 'center'
-          }}>
+  ...card,
+  cursor: 'default'
+}}>
             <p style={{ color: '#666', fontSize: '13px' }}>
               TOTAL CALLS
             </p>
@@ -223,12 +221,9 @@ border: 'none',
 
           {/* Average Score */}
           <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-            textAlign: 'center'
-          }}>
+  ...card,
+  cursor: 'default'
+}}>
             <p style={{ color: '#666', fontSize: '13px' }}>
               AVERAGE SCORE
             </p>
@@ -246,12 +241,9 @@ border: 'none',
 
           {/* Positive Calls */}
           <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '24px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-            textAlign: 'center'
-          }}>
+  ...card,
+  cursor: 'default'
+}}>
             <p style={{ color: '#666', fontSize: '13px' }}>
               POSITIVE CALLS
             </p>
@@ -280,11 +272,9 @@ border: 'none',
 
             {/* Score Over Time Chart */}
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              padding: '24px',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
-            }}>
+  ...card,
+  cursor: 'default'
+}}>
               <h3 style={{
                 color: '#1a1a2e',
                 marginBottom: '20px',
@@ -321,11 +311,9 @@ border: 'none',
 
             {/* Sentiment Pie Chart */}
             <div style={{
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              padding: '24px',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
-            }}>
+  ...card,
+  cursor: 'default'
+}}>
               <h3 style={{
                 color: '#1a1a2e',
                 marginBottom: '20px',
@@ -367,10 +355,8 @@ border: 'none',
         )}
 {/* Calls List */}
 <div style={{
-  backgroundColor: 'white',
-  borderRadius: '16px',
-  padding: '24px',
-  boxShadow: '0 2px 10px rgba(0,0,0,0.08)'
+  ...card,
+  cursor: 'default'
 }}>
   <h2 style={{ color: '#1a1a2e', marginBottom: '20px' }}>
     📋 Recent Calls
@@ -481,7 +467,9 @@ border: 'none',
                 onClick={() => navigate('/')}
                 style={{
                   marginTop: '16px',
-                  backgroundColor: '#4361ee',
+                  background: gradients.primary,
+WebkitBackgroundClip: 'text',
+WebkitTextFillColor: 'transparent',
                   color: 'white',
                   padding: '10px 24px',
                   border: 'none',
