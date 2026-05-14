@@ -157,7 +157,7 @@ const filteredCalls = calls
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#f0f2f5',
+background: 'linear-gradient(135deg, #f8f7ff, #fdf4ff)',
       padding: '30px 20px'
     }}>
 
@@ -176,7 +176,8 @@ const filteredCalls = calls
           <button
             onClick={() => navigate('/')}
             style={{
-              backgroundColor: '#4361ee',
+background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+border: 'none',
               color: 'white',
               padding: '10px 20px',
               border: 'none',
@@ -549,7 +550,7 @@ const filteredCalls = calls
                   <p style={{ fontWeight: '600', color: '#1a1a2e' }}>
   {call.filename}
 </p>
-<p style={{ color: '#4361ee', fontSize: '13px', fontWeight: '600' }}>
+<p style={{ color: '#7c3aed', fontSize: '13px', fontWeight: '600' }}>
   👤 {call.salesperson_name}
 </p>
 <p style={{ color: '#666', fontSize: '13px' }}>
