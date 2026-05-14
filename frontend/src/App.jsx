@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import useAuthStore from './store/authStore'
-
 import Navbar        from './components/Navbar'
 import LandingPage   from './pages/LandingPage'
 import UploadPage    from './pages/UploadPage'
@@ -60,7 +59,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   }
 
   return children
-}
+
 
 function App() {
   const loadFromStorage = useAuthStore(state => state.loadFromStorage)
