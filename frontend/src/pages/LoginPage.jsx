@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/authStore'
 import API_URL from '../api/config'
 // Replace all http://localhost:8000 with API_URL
+import { gradients, card, button } from '../styles/theme'
 function LoginPage() {
 
   const navigate    = useNavigate()
@@ -74,7 +75,8 @@ if (data.user_role === 'superadmin') {
   return (
     <div style={{
       minHeight: '100vh',
-background: 'linear-gradient(135deg, #f8f7ff 0%, #fdf4ff 50%, #f0f9ff 100%)',      display: 'flex',
+background: gradients.bg,
+      display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '20px'
@@ -86,9 +88,8 @@ background: 'linear-gradient(135deg, #f8f7ff 0%, #fdf4ff 50%, #f0f9ff 100%)',   
         padding: '40px',
         width: '100%',
         maxWidth: '420px',
-        boxShadow: '0 8px 32px rgba(124,58,237,0.12)',
-border: '1px solid rgba(124,58,237,0.08)',
-borderRadius: '24px'
+        ...card,
+padding: '40px',
       }}>
 
         {/* Logo */}
@@ -190,10 +191,7 @@ borderRadius: '24px'
           style={{
             width: '100%',
             padding: '14px',
-            background: loading
-  ? '#94a3b8'
-  : 'linear-gradient(135deg, #7c3aed, #ec4899)',
-border: 'none',
+            background: loading ? '#94a3b8' : gradients.primary,
             color: 'white',
             border: 'none',
             borderRadius: '10px',
