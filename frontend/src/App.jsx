@@ -19,7 +19,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   const isLoggedIn = useAuthStore(state => state.isLoggedIn)
   const isLoading  = useAuthStore(state => state.isLoading)
 
-  // Wait for auth to load from localStorage!
+  // Wait for auth to load from localStorage
   if (isLoading) {
     return (
       <div style={{
@@ -43,6 +43,7 @@ function ProtectedRoute({ children, allowedRoles }) {
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
+    // Redirect to correct home based on role
     if (user?.role === 'superadmin') return <Navigate to="/superadmin" />
     if (user?.role === 'admin')      return <Navigate to="/dashboard" />
     return <Navigate to="/upload" />
@@ -51,16 +52,6 @@ function ProtectedRoute({ children, allowedRoles }) {
   return children
 }
 
-  if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    // Redirect to correct home based on role
-    if (user?.role === 'superadmin') return <Navigate to="/superadmin" />
-    if (user?.role === 'admin') return <Navigate to="/dashboard" />
-    return <Navigate to="/upload" />
-  }
-
-  return children
-
-
 function App() {
   const loadFromStorage = useAuthStore(state => state.loadFromStorage)
   const user = useAuthStore(state => state.user)
@@ -68,29 +59,19 @@ function App() {
 
   useEffect(() => {
     loadFromStorage()
-  }, [])
+  }, [loadFromStorage])
 
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Public routes - no navbar */}
-        <Route path="/"
-          element={<LandingPage />}
-        />
-        <Route path="/login"
-          element={<LoginPage />}
-        />
-        <Route path="/register/organization"
-          element={<RegisterPage />}
-        />
-        <Route path="/register/employee"
-          element={<RegisterPage />}
-        />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register/organization" element={<RegisterPage />} />
+        <Route path="/register/employee" element={<RegisterPage />} />
 
         {/* Super Admin routes */}
-        <Route path="/superadmin" element=
-        {
+        <Route path="/superadmin" element={
           <ProtectedRoute allowedRoles={['superadmin']}>
             <Navbar />
             <SuperAdminPage />
@@ -145,7 +126,6 @@ function App() {
             <Navigate to="/" />
           )
         } />
-
       </Routes>
     </BrowserRouter>
   )
