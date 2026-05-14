@@ -90,38 +90,42 @@ navigate('/analysis', { state: { result: data, callId: savedCall.id } })
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px'
-    }}>
+  <div style={{
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '20px',
+    background: 'linear-gradient(135deg, #f8f7ff 0%, #fdf4ff 50%, #f0f9ff 100%)'
+  }}>
 
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1 style={{
-          fontSize: '32px',
-          fontWeight: 'bold',
-          color: '#1a1a2e'
-        }}>
-          🎙️ AI Sales Call Analyzer
-        </h1>
+  fontSize: '36px',
+  fontWeight: '900',
+  background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent'
+}}>
+  📈 Sales.AI
+</h1>
         <p style={{ color: '#666', marginTop: '10px', fontSize: '16px' }}>
           Upload your sales call and get instant AI coaching feedback
         </p>
       </div>
 
       {/* Upload Card */}
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '16px',
-        padding: '40px',
-        width: '100%',
-        maxWidth: '500px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-      }}>
+      <div className="card" style={{
+  backgroundColor: 'white',
+  borderRadius: '24px',
+  padding: '40px',
+  width: '100%',
+  maxWidth: '500px',
+  boxShadow: '0 8px 32px rgba(124,58,237,0.12)',
+  border: '1px solid rgba(124,58,237,0.08)'
+}}>
 
         <h2 style={{ marginBottom: '20px', color: '#1a1a2e' }}>
           Upload Sales Call
@@ -188,7 +192,7 @@ navigate('/analysis', { state: { result: data, callId: savedCall.id } })
           />
 
           <label htmlFor="fileInput" style={{
-            backgroundColor: '#4361ee',
+            background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
             color: 'white',
             padding: '10px 24px',
             borderRadius: '8px',
@@ -235,8 +239,10 @@ navigate('/analysis', { state: { result: data, callId: savedCall.id } })
           style={{
             width: '100%',
             marginTop: '24px',
-            backgroundColor: isUploading ? '#94a3b8' : '#4361ee',
-            color: 'white',
+background: isUploading
+  ? '#94a3b8'
+  : 'linear-gradient(135deg, #7c3aed, #ec4899)',
+              color: 'white',
             padding: '14px',
             border: 'none',
             borderRadius: '10px',
