@@ -472,13 +472,18 @@ const filteredCalls = calls
               <p style={{ marginTop: '10px' }}>
                 No calls analyzed yet!
               </p>
+
+  
+
+
+{user?.role === 'employee' && (
               <button
                 onClick={() => navigate('/')}
                 style={{
                   marginTop: '16px',
                   background: gradients.primary,
-WebkitBackgroundClip: 'text',
-WebkitTextFillColor: 'transparent',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
                   color: 'white',
                   padding: '10px 24px',
                   border: 'none',
@@ -488,6 +493,7 @@ WebkitTextFillColor: 'transparent',
               >
                 Upload First Call
               </button>
+              )}
             </div>
           )}
 
