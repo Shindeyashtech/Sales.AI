@@ -478,7 +478,7 @@ const filteredCalls = calls
 
 {user?.role === 'employee' && (
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/upload')}
                 style={{
                   marginTop: '16px',
                   background: gradients.primary,
