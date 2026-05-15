@@ -496,18 +496,28 @@ function LandingPage() {
                     ))}
                   </div>
 
-                  <button
+                <button
                     onClick={() => navigate('/register/organization')}
                     style={{
                       width: '100%',
                       padding: '14px',
-                      backgroundColor: plan.popular ? '#7209b7' : plan.color,
+                      backgroundColor: plan.popular ? '#ec4899' : plan.color,
                       color: 'white',
                       border: 'none',
-                      borderRadius: '10px',
+                      borderRadius: '14px',
                       fontSize: '15px',
-                      fontWeight: '700',
+                      fontWeight: '800',
                       cursor: 'pointer',
+                      boxShadow: '0 6px 24px rgba(236,72,153,0.18)',
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                      e.currentTarget.style.boxShadow = '0 10px 34px rgba(236,72,153,0.28)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0px)'
+                      e.currentTarget.style.boxShadow = '0 6px 24px rgba(236,72,153,0.18)'
                     }}
                   >
                     {plan.button}
