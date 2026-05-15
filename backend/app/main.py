@@ -22,12 +22,14 @@ from app.api.upload import router as upload_router
 from app.api.auth import router as auth_router
 from app.api.superadmin import router as superadmin_router
 from app.api.admin import router as admin_router
+from app.api.chat import router as chat_router
 
 # Register all routers
 app.include_router(upload_router,    prefix="/api/v1",            tags=["Upload"])
 app.include_router(auth_router,      prefix="/api/v1/auth",       tags=["Auth"])
 app.include_router(superadmin_router,prefix="/api/v1/superadmin", tags=["SuperAdmin"])
 app.include_router(admin_router,     prefix="/api/v1/admin",      tags=["Admin"])
+app.include_router(chat_router, prefix="/api/v1", tags=["Chat"])
 
 @app.options("/{rest_of_path:path}")
 async def preflight(request: Request, rest_of_path: str):
