@@ -36,7 +36,10 @@ async def get_team(authorization: str = Header(None)):
     db         = get_db()
 
     team = []
-    async for user in db.users.find({"org_id": org_id}):
+    async for user in db.users.find({
+    "org_id": org_id,
+    "role":   "employee"  # Only show employees!
+}):
         user_id = str(user["_id"])
 
         # Get call stats for this user
