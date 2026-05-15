@@ -795,7 +795,7 @@ async function handleExportPDF() {
 }}>
   {/* Analyze Another Call */}
   <button
-    onClick={() => navigate('/')}
+    onClick={() => navigate('/upload')}
     style={{
       backgroundColor: 'white',
       color: '#4361ee',
