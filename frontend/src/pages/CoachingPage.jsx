@@ -118,20 +118,7 @@ async function fetchCalls() {
               Personalized improvement plans for your team
             </p>
           </div>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              backgroundColor: '#4361ee',
-              color: 'white',
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontWeight: '600'
-            }}
-          >
-            + New Upload
-          </button>
+         
         </div>
 
         {/* No calls state */}
