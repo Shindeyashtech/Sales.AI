@@ -177,7 +177,7 @@ async function fetchCalls() {
                 fontSize: '13px',
                 marginBottom: '12px'
               }}>
-                SELECT SALESPERSON
+                SALESPERSON
               </p>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {salespeople.map((person) => (
@@ -197,7 +197,8 @@ async function fetchCalls() {
                       fontWeight: '500'
                     }}
                   >
-                    {person === 'All' ? '👥 All' : `👤 ${person}`}
+                    {/* 'All' ? '👥 All' : */}
+                    {person ===  `👤 ${person}`}
                   </button>
                 ))}
               </div>
