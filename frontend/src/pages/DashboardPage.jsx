@@ -179,16 +179,25 @@ const filteredCalls = calls
 }}>
   📊 Dashboard
 </h1>
-          <button
-            onClick={() => navigate('/')}
-          style={{
-  ...button.primary,
-  padding: '10px 20px',
-  boxShadow: shadows.button
-}}
-          >
-            + New Upload
-          </button>
+          {/* Only show upload button for employees */}
+{user?.role === 'employee' && (
+  <button
+    onClick={() => navigate('/upload')}
+    style={{
+      background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+      color: 'white',
+      padding: '10px 20px',
+      border: 'none',
+      borderRadius: '12px',
+      cursor: 'pointer',
+      fontWeight: '600',
+      fontSize: '14px',
+      boxShadow: '0 4px 14px rgba(124,58,237,0.3)'
+    }}
+  >
+    + New Upload
+  </button>
+)}
         </div>
 
         {/* Stats Cards */}
