@@ -9,11 +9,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../store/authStore'
 function CoachingPage() {
-const navigate = useNavigate()
-const token    = useAuthStore(state => state.token)
-const [calls, setCalls]               = useState([])
-const [selectedPerson, setSelectedPerson] = useState('All')
-const [loading, setLoading]           = useState(true)
+  const navigate = useNavigate()
+  const token    = useAuthStore(state => state.token)
+
+  const [calls, setCalls]                 = useState([])
+  const [selectedPerson, setSelectedPerson] = useState('All')
+  const [loading, setLoading]            = useState(true)
+
 
 useEffect(() => {
   fetchCalls()
