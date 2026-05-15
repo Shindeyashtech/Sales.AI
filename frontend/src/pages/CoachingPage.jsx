@@ -99,8 +99,9 @@ async function fetchCalls() {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#f0f2f5',
-      padding: '30px 20px'
+      background: 'linear-gradient(135deg, #f8f7ff 0%, #fdf4ff 40%, #f0f9ff 100%)',
+      padding: '30px 20px',
+      fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, sans-serif'
     }}>
 
       <div style={{ maxWidth: '960px', margin: '0 auto' }}>
@@ -113,11 +114,16 @@ async function fetchCalls() {
           marginBottom: '30px'
         }}>
           <div>
-            <h1 style={{ color: '#1a1a2e', fontSize: '24px' }}>
+            <h1 style={{
+              color: '#1a1a2e',
+              fontSize: '26px',
+              fontWeight: 900,
+              letterSpacing: '-0.02em',
+            }}>
               🎯 Coaching Center
             </h1>
-            <p style={{ color: '#666', fontSize: '14px', marginTop: '4px' }}>
-              Personalized improvement plans for your team
+            <p style={{ color: '#64748b', fontSize: '14px', marginTop: '4px' }}>
+              Fun, approachable tips — tailored for every sales rep
             </p>
           </div>
          
