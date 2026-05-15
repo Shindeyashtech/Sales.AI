@@ -5,14 +5,16 @@
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { gradients, card, button } from '../styles/theme'
 
 function RegisterPage() {
+
   const navigate = useNavigate()
 
   // Check URL to know which type
-  const [isOrg] = useState(
-  window.location.pathname.includes('organization')
-)
+  const [isOrg] = useState(window.location.pathname.includes('organization'))
+
+
   const [name,      setName]      = useState('')
   const [email,     setEmail]     = useState('')
   const [password,  setPassword]  = useState('')
@@ -89,12 +91,13 @@ if (!response.ok) {
     return (
       <div style={{
         minHeight: '100vh',
-        backgroundColor: '#f0f2f5',
+        background: gradients.bg,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '20px'
       }}>
+
         <div style={{
           backgroundColor: 'white',
           borderRadius: '20px',
@@ -151,14 +154,15 @@ if (!response.ok) {
               marginTop: '24px',
               width: '100%',
               padding: '14px',
-              backgroundColor: '#4361ee',
+              background: gradients.primary,
               color: 'white',
               border: 'none',
-              borderRadius: '10px',
+              borderRadius: '12px',
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer'
             }}
+
           >
             Go to Login →
           </button>
@@ -191,11 +195,12 @@ if (!response.ok) {
           <span style={{ fontSize: '40px' }}>📈</span>
           <h1 style={{
             fontSize: '28px',
-            fontWeight: '800',
-            background: 'linear-gradient(90deg, #4361ee, #7209b7)',
+            fontWeight: '900',
+            background: 'linear-gradient(90deg, #7c3aed, #ec4899, #06b6d4)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            marginTop: '8px'
+            marginTop: '8px',
+            letterSpacing: '-0.02em'
           }}>
             Sales.AI
           </h1>
@@ -379,16 +384,18 @@ if (!response.ok) {
           style={{
             width: '100%',
             padding: '14px',
-            backgroundColor: loading ? '#94a3b8' : '#4361ee',
+            background: loading ? '#94a3b8' : gradients.primary,
             color: 'white',
             border: 'none',
-            borderRadius: '10px',
+            borderRadius: '12px',
             fontSize: '16px',
             fontWeight: '600',
             cursor: loading ? 'not-allowed' : 'pointer'
           }}
         >
+
           {loading ? '⏳ Creating...' : '✅ Create Account'}
+
         </button>
 
         {/* Back to login */}
