@@ -140,7 +140,7 @@ async function fetchCalls() {
               Upload calls to see coaching plans
             </p>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/upload')}
               style={{
                 marginTop: '20px',
                 backgroundColor: '#4361ee',
