@@ -1,9 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi import Request
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
@@ -17,8 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Import database functions
-from app.database import connect_db, close_db
+# Database
+from app.db.mongodb import connect_db, close_db
 
 # Import all routers
 from app.api.upload import router as upload_router
@@ -91,7 +89,10 @@ async def preflight(request: Request, rest_of_path: str):
 
 @app.get("/")
 def home():
-    return {"message": "Sales.AI Running!", "status": "healthy"}
+    return {
+        "message": "Sales.AI Running!",
+        "status": "healthy"
+    }
 
 
 @app.get("/health")
